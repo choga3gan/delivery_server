@@ -122,4 +122,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(new ErrorResponse(status, message));
     }
+
+    /**
+     * 직접 설정한 예외(Custom Exception)를 처리하는 메서드
+     * 직접 설정한 상태 코드를 반환
+     *
+     * @return 상태 코드와 에러 메시지
+     */
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        return ResponseEntity.status(ex.getStatus()).body(new ErrorResponse(ex.getStatus(), ex.getMessage()));
+    }
 }
