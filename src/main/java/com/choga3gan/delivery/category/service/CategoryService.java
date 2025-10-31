@@ -33,7 +33,7 @@ public interface CategoryService {
     List<Category> getAllCategories();
 
     // Update
-    Category updateCategory(CategoryDto categoryDto);
+    Category updateCategory(UUID categoryId, CategoryDto categoryDto);
 
     // Delete
     void deleteCategory(UUID categoryId);
