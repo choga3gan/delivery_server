@@ -1,3 +1,6 @@
+server:
+  port: 3000
+
 # OPEN DOC API 설정
 springdoc:
   version: '1.0.0'
