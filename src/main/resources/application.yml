@@ -16,7 +16,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: ${DB_DDL_AUTO}
+      ddl-auto: ${DEV_DB_DDL_AUTO}
     open-in-view: false
     generate-ddl: true
 
