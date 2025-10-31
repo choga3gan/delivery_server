@@ -41,4 +41,8 @@ public class Category extends Auditable {
     public Category(String categoryName) {
         this.categoryName = categoryName;
     }
+
+    public void changeCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }
