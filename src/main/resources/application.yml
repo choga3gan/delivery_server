@@ -1,0 +1,15 @@
+# OPEN DOC API 설정
+springdoc:
+  version: '1.0.0'
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /api-docs.html
+    disable-swagger-default-url: true
+    doc-expansion: full
+  paths-to-match:
+    - /v1/** 
