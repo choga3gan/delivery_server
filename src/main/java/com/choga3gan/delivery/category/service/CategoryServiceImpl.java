@@ -19,6 +19,8 @@ package com.choga3gan.delivery.category.service;
 
 import com.choga3gan.delivery.category.domain.Category;
 import com.choga3gan.delivery.category.dto.CategoryDto;
+import com.choga3gan.delivery.category.exception.CategoryNotFoundException;
+import com.choga3gan.delivery.category.exception.DuplicateCategoryNameException;
 import com.choga3gan.delivery.category.repository.CategoryRepository;
 import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,6 +47,9 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Category createCategory(CategoryDto categoryDto) {
+        if (categoryRepository.existsByCategoryName(categoryDto.getCategoryName())) {
+            throw new DuplicateCategoryNameException();
+        }
         Category category = new Category(categoryDto.getCategoryName());
         return categoryRepository.save(category);
     }
@@ -57,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Category getCategory(UUID categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found"));
+        return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
     }
 
     /**
@@ -79,7 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category updateCategory(UUID categoryId, CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+                .orElseThrow(CategoryNotFoundException::new);
         category.changeCategoryName(categoryDto.getCategoryName());
         return category;
     }
@@ -92,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(UUID categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+                .orElseThrow(CategoryNotFoundException::new);
         category.softDelete(securityUtil.getCurrentUsername());
     }
 }

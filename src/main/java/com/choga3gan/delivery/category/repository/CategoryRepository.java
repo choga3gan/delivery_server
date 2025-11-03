@@ -26,4 +26,5 @@ import java.util.UUID;
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
     Category findByCategoryId(UUID categoryId);
     List<Category> findAll();
+    boolean existsByCategoryName(String categoryName);
 }
