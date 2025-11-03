@@ -110,4 +110,31 @@ public class CategoryController {
                 .status(HttpStatus.OK)
                 .body(new CategoryResponse(category.getCategoryId(), category.getCategoryName()));
     }
+
+    @Operation(
+            summary = "특정 카테고리 수정",
+            description = """
+            주어진 categoryId에 대하여 body에 담긴 필드에 대한 값을 수정합니다.
+            """
+    )
+    @Parameters({
+            @Parameter(
+                    name = "categoryId",
+                    description = "조회할 카테고리 ID",
+                    example = "123550e8400-e29b-41d4-a716-446655440000",
+                    required = true
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상 조회"),
+            @ApiResponse(responseCode = "404", description = "해당 카테고리를 찾을 수 없음")
+    })
+    @PatchMapping("/{categoryId}")
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable("categoryId") UUID categoryId,
+                                                           @RequestBody CategoryDto categoryDto) {
+        Category category = categoryService.updateCategory(categoryId, categoryDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new CategoryResponse(category.getCategoryId(), category.getCategoryName()));
+    }
 }
