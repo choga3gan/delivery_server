@@ -120,7 +120,7 @@ public class CategoryController {
     @Parameters({
             @Parameter(
                     name = "categoryId",
-                    description = "조회할 카테고리 ID",
+                    description = "수정할 카테고리 ID",
                     example = "123550e8400-e29b-41d4-a716-446655440000",
                     required = true
             )
@@ -136,5 +136,29 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new CategoryResponse(category.getCategoryId(), category.getCategoryName()));
+    }
+
+    @Operation(
+            summary = "특정 카테고리 삭제",
+            description = """
+            주어진 categoryId에 대하여 해당 카테고리를 삭제 처리합니다.
+            """
+    )
+    @Parameters({
+            @Parameter(
+                    name = "categoryId",
+                    description = "삭제할 카테고리 ID",
+                    example = "123550e8400-e29b-41d4-a716-446655440000",
+                    required = true
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "삭제 처리 완료"),
+            @ApiResponse(responseCode = "404", description = "해당 카테고리를 찾을 수 없음")
+    })
+    @DeleteMapping
+    public ResponseEntity deleteCategory(UUID categoryId) {
+        categoryService.deleteCategory(categoryId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
