@@ -23,7 +23,6 @@ import com.choga3gan.delivery.category.exception.CategoryNotFoundException;
 import com.choga3gan.delivery.category.exception.DuplicateCategoryNameException;
 import com.choga3gan.delivery.category.repository.CategoryRepository;
 import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     private SecurityUtilService securityUtil;
 
     /**

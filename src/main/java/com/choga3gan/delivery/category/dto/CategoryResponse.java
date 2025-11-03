@@ -35,5 +35,6 @@ public class CategoryResponse {
     @Builder
     public CategoryResponse(UUID categoryID, String categoryName) {
         this.categoryID = categoryID;
+        this.categoryName = categoryName;
     }
 }
