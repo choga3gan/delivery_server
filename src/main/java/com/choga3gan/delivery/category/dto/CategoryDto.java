@@ -18,6 +18,8 @@
 package com.choga3gan.delivery.category.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -25,5 +27,10 @@ import lombok.Getter;
 public class CategoryDto {
 
     @Schema(description = "등록 또는 수정할 카테고리 이름 설정", example = "한식")
-    private String categoryName;
+    @NotBlank private String categoryName;
+
+    @Builder
+    public CategoryDto(String categoryName) {
+        this.categoryName = categoryName;
+    }
 }
