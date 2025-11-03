@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll(); // TODO : 삭제된 카테고리 조회 안되도록
+        return categoryRepository.findAll();
     }
 
     /**

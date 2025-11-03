@@ -22,6 +22,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Table(name = "p_category")
 @Getter
 @NoArgsConstructor
+@SQLRestriction("deleted_at IS NULL")
 public class Category extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
