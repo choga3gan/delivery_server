@@ -36,3 +36,4 @@ out/
 .vscode/
 generated/
 .env
+application-local.yml
