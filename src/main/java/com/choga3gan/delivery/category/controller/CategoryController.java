@@ -29,10 +29,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "카테고리 API", description = "카테고리 등록, 조회, 수정, 삭제 기능을 위한 API")
 @RestController
@@ -60,5 +59,26 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new CategoryResponse(category.getCategoryId(), category.getCategoryName()));
+    }
+
+    @Operation(
+        summary = "모든 카테고리 조회",
+        description = """
+            삭제 처리되지 않은 모든 카테고리를 조회한다.
+            조회한 카테고리들을 리스트로 반환한다.
+            """
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "정상 조회"),
+    })
+    @GetMapping
+    public ResponseEntity<List<CategoryResponse>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        List<CategoryResponse> responseList = categories.stream()
+                .map(category -> new CategoryResponse(category.getCategoryId(), category.getCategoryName()))
+                .toList();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(responseList);
     }
 }
