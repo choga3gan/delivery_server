@@ -20,6 +20,7 @@ package com.choga3gan.delivery.category.service;
 import com.choga3gan.delivery.category.domain.Category;
 import com.choga3gan.delivery.category.dto.CategoryDto;
 import com.choga3gan.delivery.category.repository.CategoryRepository;
+import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ import java.util.UUID;
 public class CategoryServiceImpl implements CategoryService {
 
     private CategoryRepository categoryRepository;
+    private SecurityUtilService securityUtil;
 
     /**
      * 신규 카테고리 생성 메서드
@@ -91,6 +93,6 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(UUID categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found"));
-        // category.softDelete();
+        category.softDelete(securityUtil.getCurrentUsername());
     }
 }
