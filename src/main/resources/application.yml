@@ -16,4 +16,15 @@ springdoc:
     disable-swagger-default-url: true
     doc-expansion: full
   paths-to-match:
-    - /v1/** 
+    - /v1/**
+
+#JWT 설정
+user.jwt:
+  secret: ${JWT_SECRET}
+  valid-time: ${JWT_VALID_TIME}
+
+# 로그 설정
+logging:
+  level:
+    org.hibernate.type: trace
+    org.hibernate.orm.jdbc.bind: trace
