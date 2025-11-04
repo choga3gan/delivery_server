@@ -36,7 +36,7 @@ public class Category extends Auditable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID categoryId;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String categoryName;
 
     @Builder

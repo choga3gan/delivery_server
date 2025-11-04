@@ -20,6 +20,7 @@ package com.choga3gan.delivery.category.repository;
 import com.choga3gan.delivery.category.domain.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,5 +28,5 @@ import java.util.UUID;
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
     Optional<Category> findByCategoryId(UUID categoryId);
     List<Category> findAll();
-    boolean existsByCategoryName(String categoryName);
+    boolean existsByCategoryNameAndDeletedAtIsNull(String categoryName);
 }
