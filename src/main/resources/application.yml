@@ -1,7 +1,3 @@
-spring:
-  profiles: # profiles 설정
-    active: local
-
 server:
   port: 3000
 
