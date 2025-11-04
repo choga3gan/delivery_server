@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME) // 해당 어노테이션이 언제까지 유지되는가를 나타내는 어노테이션
 @WithSecurityContext(factory = WithMockSecurityContextFactory.class) //spring security 지원용 어노테이션 -> 지정된 factory 클래스를 이용해 security 컨텍스트 생성
 public @interface MockUser {
-    String username() default "testuser01";
-    String email() default "testuser@test.org";
+    String username() default "tester";
+    String email() default "test@test.org";
     String[] roles() default {"USER"};
 }

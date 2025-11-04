@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,7 +115,7 @@ public class RoleController {
     @PostMapping
     public ResponseEntity<Role> createRole(@RequestBody RoleDto roleDto) {
         Role createRole = roleService.createRole(roleDto);
-        return ResponseEntity.ok(createRole);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createRole);
     }
 
 
@@ -136,7 +137,7 @@ public class RoleController {
     @PutMapping("/{roleId}")
     public ResponseEntity<Role> updateRole(@PathVariable UUID roleId, @RequestBody RoleDto roleDto) {
         Role updateRole = roleService.updateRole(roleId, roleDto);
-        return ResponseEntity.ok(updateRole);
+        return ResponseEntity.status(HttpStatus.OK).body(updateRole);
     }
 
     @Operation(
