@@ -17,6 +17,13 @@
 
 package com.choga3gan.delivery.global.utils.service;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class SecurityUtilServiceImplDummy implements SecurityUtilService {
 
     /**

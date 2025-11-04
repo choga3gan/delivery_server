@@ -36,7 +36,7 @@ import java.util.UUID;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private SecurityUtilService securityUtil;
+    private final SecurityUtilService securityUtil;
 
     /**
      * 신규 카테고리 생성 메서드
@@ -46,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Category createCategory(CategoryDto categoryDto) {
-        if (categoryRepository.existsByCategoryName(categoryDto.getCategoryName())) {
+        if (categoryRepository.existsByCategoryNameAndDeletedAtIsNull(categoryDto.getCategoryName())) {
             throw new DuplicateCategoryNameException();
         }
         Category category = new Category(categoryDto.getCategoryName());

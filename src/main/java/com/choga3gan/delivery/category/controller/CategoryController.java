@@ -156,8 +156,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "204", description = "삭제 처리 완료"),
             @ApiResponse(responseCode = "404", description = "해당 카테고리를 찾을 수 없음")
     })
-    @DeleteMapping
-    public ResponseEntity deleteCategory(UUID categoryId) {
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity deleteCategory(@PathVariable("categoryId") UUID categoryId) {
         categoryService.deleteCategory(categoryId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
