@@ -18,9 +18,15 @@
 package com.choga3gan.delivery.product.repository;
 
 import com.choga3gan.delivery.product.domain.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
+    Page<Product> findByStoreId(UUID storeId, Pageable pageable);
+    Optional<Product> findByStoreIdAndProductId(UUID storeId, UUID productId);
+    Page<Product> findAll(Pageable pageable);
 }

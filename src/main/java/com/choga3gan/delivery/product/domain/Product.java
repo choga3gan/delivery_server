@@ -48,7 +48,8 @@ public class Product extends Auditable {
     @Column(nullable = false)
     private double price;
 
-    private boolean isPublic = true;
+    @Column(name = "is_public")
+    private boolean open = true;
 
     private String productImg;
 
@@ -68,7 +69,8 @@ public class Product extends Auditable {
     private Store store;
 
     @Builder
-    public Product(String productName, double price, String productImg, String description, List<Category> categories, Store store) {
+    public Product(String productName, double price, String productImg,
+                   String description, List<Category> categories, Store store) {
         this.productName = productName;
         this.price = price;
         this.productImg = productImg;
@@ -100,7 +102,7 @@ public class Product extends Auditable {
      *
      */
     public void publish() {
-        this.isPublic = true;
+        this.open = true;
     }
 
     /**
@@ -108,7 +110,7 @@ public class Product extends Auditable {
      *
      */
     public void unpublish() {
-        this.isPublic = false;
+        this.open = false;
     }
 
     /**
