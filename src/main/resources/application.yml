@@ -20,8 +20,8 @@ springdoc:
 
 #JWT 설정
 user.jwt:
-  secret: ${JWT_SECRET}
-  valid-time: ${JWT_VALID_TIME}
+  secret: ${{JWT_SECRET}}
+  valid-time: ${{JWT_VALID_TIME}}
 
 # 로그 설정
 logging:

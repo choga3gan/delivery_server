@@ -22,7 +22,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -55,10 +54,8 @@ public class SecurityConfig {
                     });
                 })
                 .authorizeHttpRequests(authorize -> { authorize
-                        // 인증 없이 접근 가능한 경로
-                        .requestMatchers("/v1/users/**").permitAll()
-                        // 공개 get API (매장 목목, 메뉴 보기 등)
-                        .requestMatchers(HttpMethod.GET, "/v1/stores/**", "/v1/product/**").permitAll()
+                        .requestMatchers("/api-docs/**","/v1/users/**","/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html","/").permitAll()// 인증 없이 접근 가능한 경로
+                        //.requestMatchers(HttpMethod.GET, "/v1/stores/**", "/v1/products/**").permitAll()// 공개 get API (매장 목목, 메뉴 보기 등)
                         .requestMatchers("/v1/users/profile").hasRole("USER") // 해당 경로는 해당 권한을 가진 사람만 접근 가능
                         .anyRequest().authenticated(); // 그 외 모든 요청은 인증 필요
                 });
