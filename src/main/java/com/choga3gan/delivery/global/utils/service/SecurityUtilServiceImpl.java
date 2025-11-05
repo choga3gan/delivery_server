@@ -24,15 +24,30 @@ import org.springframework.stereotype.Service;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SecurityUtilServiceImplDummy implements SecurityUtilService {
+public class SecurityUtilServiceImpl implements SecurityUtilService {
 
     /**
-     * Spring Security 개발이 완료되기 전까지 현재 접속 중인 사용자의 username을 가짜로 반환
+     * 현재 접속 중인 사용자의 username 반환
      *
-     * @return 현재 접속 중인 사용자의 username (Dummy)
+     * @return 현재 접속 중인 사용자의 username
      */
     @Override
     public String getCurrentUsername() {
-        return "test_system";
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        if (authentication == null || !authentication.isAuthenticated()) {
+//            return "anonymous";
+//        }
+//
+//        Object principal = authentication.getPrincipal();
+//
+//        if (principal instanceof UserDetails userDetails) {
+//            return userDetails.getUsername();
+//        } else if (principal instanceof String username) {
+//            return username;
+//        } else {
+//            return "unknown";
+//        }
+        return "test_user";
     }
 }

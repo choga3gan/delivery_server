@@ -17,6 +17,7 @@
 
 package com.choga3gan.delivery.category.dto;
 
+import com.choga3gan.delivery.category.domain.Category;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,5 +37,12 @@ public class CategoryResponse {
     public CategoryResponse(UUID categoryID, String categoryName) {
         this.categoryID = categoryID;
         this.categoryName = categoryName;
+    }
+
+    public static CategoryResponse from(Category category) {
+        return CategoryResponse.builder()
+                .categoryID(category.getCategoryId())
+                .categoryName(category.getCategoryName())
+                .build();
     }
 }

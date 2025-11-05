@@ -36,5 +36,5 @@ public interface CategoryService {
     Category updateCategory(UUID categoryId, CategoryDto categoryDto);
 
     // Delete
-    void deleteCategory(UUID categoryId);
+    void removeCategory(UUID categoryId);
 }
