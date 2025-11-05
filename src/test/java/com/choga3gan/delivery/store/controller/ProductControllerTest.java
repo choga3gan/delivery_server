@@ -2,6 +2,7 @@ package com.choga3gan.delivery.store.controller;
 
 import com.choga3gan.delivery.category.domain.Category;
 import com.choga3gan.delivery.category.repository.CategoryRepository;
+import com.choga3gan.delivery.product.domain.Product;
 import com.choga3gan.delivery.product.dto.ProductRequest;
 import com.choga3gan.delivery.product.repository.ProductRepository;
 import com.choga3gan.delivery.store.domain.ServiceTime;
@@ -11,6 +12,7 @@ import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -62,6 +65,8 @@ public class ProductControllerTest {
     private Category category2;
     private Store store1;
     private Store store2;
+    private Product product1;
+    private Product product2;
 
     @BeforeEach
     public void setup() {
@@ -88,12 +93,18 @@ public class ProductControllerTest {
                 .categories(List.of(category2))
                 .serviceTime(ServiceTime.builder().startTime(LocalTime.of(10, 0)).endTime(LocalTime.of(22, 0)).build())
                 .build());
+
+        product1 = productRepository.save(Product.builder()
+                .categories(List.of(category2))
+                .store(store1)
+                .productName("떡볶이")
+                .price(3000).build());
     }
 
     @Test
     @WithMockUser(username = "test_user", roles = {"OWNER"})
     @DisplayName("신규 상품 추가 테스트")
-    public void createProduct() throws Exception {
+    void createProductTest() throws Exception {
         ProductRequest request = ProductRequest.builder()
                 .categoryIds(List.of(category2.getCategoryId()))
                 .productName("떡볶이")
@@ -109,5 +120,17 @@ public class ProductControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.productId").isNotEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = "test_user", roles = {"OWNER"})
+    @DisplayName("매장의 상품 목록 조회 테스트")
+    void getAllProductsFromStoreTest() throws Exception {
+        mockMvc.perform(get("/v1/stores/{storeId}/products", store1.getStoreId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].productId").isNotEmpty());
     }
 }
