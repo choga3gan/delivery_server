@@ -28,6 +28,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -37,9 +38,11 @@ import java.util.stream.Collectors;
 @Table(name = "p_store")
 @Getter
 @NoArgsConstructor
+@SQLRestriction("deleted_at IS NULL")
 public class Store extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "store_id")
     private UUID storeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +51,7 @@ public class Store extends Auditable {
 
     @ManyToMany
     @JoinTable(
-            name = "p_category",
+            name = "store_category",
             joinColumns = @JoinColumn(name = "store_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
@@ -72,14 +75,14 @@ public class Store extends Auditable {
     @Embedded
     private ServiceTime serviceTime;
 
-    @Column(nullable = false)
     private String telNum;
 
     private int reviewCount;
 
     @Builder
-    public Store(List<Category> categories, String storeName, String address, ServiceTime serviceTime, String telNum) {
+    public Store(List<Category> categories, User user, String storeName, String address, ServiceTime serviceTime, String telNum) {
         this.categories = categories;
+        this.user = user;
         this.storeName = storeName;
         this.address = address;
         this.serviceTime = serviceTime;

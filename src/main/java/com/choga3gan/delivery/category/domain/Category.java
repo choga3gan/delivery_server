@@ -36,6 +36,7 @@ import java.util.UUID;
 public class Category extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "category_id")
     private UUID categoryId;
 
     @Column(nullable = false)

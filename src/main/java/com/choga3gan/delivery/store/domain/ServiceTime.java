@@ -37,7 +37,7 @@ public class ServiceTime {
     private LocalTime endTime;
 
     @Builder
-    ServiceTime(LocalTime startTime, LocalTime endTime) {
+    public ServiceTime(LocalTime startTime, LocalTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
