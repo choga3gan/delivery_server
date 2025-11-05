@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +53,7 @@ public class ProductController {
         @Parameter(
             name = "storeId",
             description = "상품을 추가할 매장 Id",
-            example = "123",
+            example = "123550e8400-e29b-41d4-a716-446655440000",
             required = true
         )
     })
@@ -66,5 +67,31 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ProductResponse.from(product));
+    }
+
+    @Operation(
+            summary = "매장에 있는 모든 상품 조회",
+            description = """
+            매장에 포함되어 있는 모든 상품을 페이지 형태로 조회합니다.
+            """
+    )
+    @Parameters({
+            @Parameter(
+                    name = "storeId",
+                    description = "상품을 조회할 매장 Id",
+                    example = "123550e8400-e29b-41d4-a716-446655440000",
+                    required = true
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "매장을 찾을 수 없음")
+    })
+    @GetMapping
+    public ResponseEntity<Page<ProductResponse>> getAllProductsFromStore(@PathVariable UUID storeId) {
+        Page<Product> productPage = productService.getProducts(storeId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(productPage.map(ProductResponse::from));
     }
 }
