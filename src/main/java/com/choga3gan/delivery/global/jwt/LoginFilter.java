@@ -40,7 +40,6 @@ public class LoginFilter extends GenericFilterBean {
      * GenericFilterBean의 doFilter를 오버라이드
      * 요청 헤더
      *      Authentication: Bearer 토큰
-     *
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -60,7 +59,7 @@ public class LoginFilter extends GenericFilterBean {
     private void authenticate(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
 
-        if (!StringUtils.hasText(authorization) || !authorization.startsWith("Bearer")) {
+        if (!StringUtils.hasText(authorization) || !authorization.startsWith("Bearer ")) {
             return;
         }
 
