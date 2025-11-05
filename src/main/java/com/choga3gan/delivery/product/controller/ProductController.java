@@ -60,8 +60,9 @@ public class ProductController {
         )
     })
     @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "신규 상품 생성 성공"),
-        @ApiResponse(responseCode = "404", description = "매장을 찾을 수 없음")
+            @ApiResponse(responseCode = "201", description = "신규 상품 생성 성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "매장을 찾을 수 없음")
     })
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@PathVariable UUID storeId, @RequestBody ProductRequest productRequest) {
@@ -170,6 +171,7 @@ public class ProductController {
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "상품 수정 성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
     @PatchMapping("/{productId}")
@@ -179,5 +181,37 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ProductResponse.from(product));
+    }
+
+    @Operation(
+            summary = "특정 상품 상세 정보 조회",
+            description = """
+            특정 상품 하나의 상세 정보를 조회합니다.
+            """
+    )
+    @Parameters({
+            @Parameter(
+                    name = "storeId",
+                    description = "상품이 포함된 매장 Id",
+                    example = "123550e8400-e29b-41d4-a716-446655440000",
+                    required = true
+            ),
+            @Parameter(
+                    name = "productId",
+                    description = "삭제할 상품 Id",
+                    example = "123550e8400-e29b-41d4-a716-446655440000",
+                    required = true
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "삭제 성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음"),
+            @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
+    })
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<ProductResponse> removeProduct(@PathVariable UUID storeId, @PathVariable UUID productId) {
+        productService.removeProduct(storeId, productId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT).build();
     }
 }
