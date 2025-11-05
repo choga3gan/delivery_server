@@ -1,0 +1,62 @@
+/**
+ * @package     com.choga3gan.delivery.product.dto
+ * @class       ProductRequest
+ * @description 상품 신규 추가 및 수정 요청을 위한 DTO
+ *
+ * @author      jinnk0
+ * @since       2025. 11. 5.
+ * @version     1.0
+ *
+ * <pre>
+ * == Modification Information ==
+ * Date          Author        Description
+ * ----------    -----------   ---------------------------
+ * 2025. 11. 5.        jinnk0       최초 생성
+ * </pre>
+ */
+
+package com.choga3gan.delivery.product.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+import java.util.UUID;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@Schema(description = "Product 생성/수정을 위한 요청 DTO")
+public class ProductRequest {
+    @Schema(description = "상품의 카테고리 분류 선택 리스트", example = "[550e8400-e29b-41d4-a716-446655440000]")
+    private List<UUID> categoryIds; // 카테고리 ID 리스트
+
+    @Schema(description = "상품 이름", example = "떡볶이")
+    private String productName;
+
+    @Schema(description = "상품 가격", example = "3000.0")
+    private Double price;
+
+    @Schema(description = "상품 공개 설정", example = "true")
+    private Boolean open;
+
+    @Schema(description = "상품 이미지 url", example = "https://picsum.photos/200")
+    private String productImg;
+
+    @Schema(description = "상품 소개 설명", example = "둘이 먹다 하나가 죽어도 모르는 떡볶이")
+    private String description;
+
+    @Builder
+    public ProductRequest(List<UUID> categoryIds, String productName, Double price, Boolean open, String productImg, String description) {
+        this.categoryIds = categoryIds;
+        this.productName = productName;
+        this.price = price;
+        this.open = open;
+        this.productImg = productImg;
+        this.description = description;
+    }
+}

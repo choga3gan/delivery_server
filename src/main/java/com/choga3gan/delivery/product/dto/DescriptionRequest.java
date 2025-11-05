@@ -1,4 +1,4 @@
 package com.choga3gan.delivery.product.dto;
 
-public class ProductDto {
+public class DescriptionRequest {
 }
