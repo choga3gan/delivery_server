@@ -74,7 +74,7 @@ public class TokenService {
         // 엑세스 토큰
         Date now = new Date();
         Date accessExpire = new Date(now.getTime() + properties.getValidTime() * 1000L);
-        Date refreshExpire = new Date(now.getTime() + properties.getValidTime() * 1000L);
+        Date refreshExpire = new Date(now.getTime() + properties.getValidTime() * 2000L);
 
 
         //엑세스 토큰 생성
@@ -98,6 +98,66 @@ public class TokenService {
                 .refreshToken(refreshToken)
                 .expireTime(properties.getValidTime())
                 .build();
+    }
+
+    /**
+     * 토큰 재발급 메서드
+     * refreshToken으로 AccessToken을 재발급하는 매서드
+     * @param
+     * @return
+     */
+    public TokenDto refresh(String refreshToken){
+        // 토큰 유효성 검사
+        validate(refreshToken);
+
+        //사용자 정보 추출
+        Claims claims = Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(refreshToken)
+                .getPayload();
+
+        //사용자 이름
+        String username = claims.getSubject();
+
+        //사용자 조회
+        User user = repository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+
+        // 조회한 사용자의 refreshToken 과 요청받은 refreshToken 일치 여부 확인
+        if(!refreshToken.equals(user.getRefreshToken())){
+            throw new UnauthorizedException("리프레시 토큰이 일치하지 않습니다.");
+        }
+
+        // 토큰 발급
+        Date now = new Date();
+        Date accessExpire = new Date(now.getTime() + properties.getValidTime() * 1000L);
+
+        String accessToken = Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(now)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(accessExpire)
+                .compact();
+
+        return TokenDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .expireTime(properties.getValidTime())
+                .build();
+    }
+
+    /**
+     * 토큰을 파싱해 식별자를 가져오는 메서드
+     * @param
+     * @return
+     */
+    public String getTokenSubject(String token){
+        Claims claims = Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getPayload();
+        return claims.getSubject();
     }
 
     /**
@@ -130,7 +190,8 @@ public class TokenService {
          * Authentication 인터페이스는 spring security 에서 인증된 사용자 정보를 담는 표준 객체
          * UsernamePasswordAuthenticationToken 클래스는 Authentication 인터페이스를 구현한 구현체
          */
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken
+                (userDetails, null, userDetails.getAuthorities());
 
         /**
          * 로그인 처리

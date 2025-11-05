@@ -52,12 +52,47 @@ public class UserService {
         //JWT 토큰 생성
         TokenDto tokenDto = tokenService.create(user.getUsername());
 
-        // TODO : refresh 토큰 DB에 저장
+        // refresh 토큰 DB에 저장
+        user.updateRefreshToken(tokenDto.refreshToken());
+        userRepository.save(user);
 
         return LoginResponse.builder()
                 .access_token(tokenDto.accessToken())
                 .refresh_token(tokenDto.refreshToken())
                 .username(user.getUsername())
                 .build();
+    }
+
+    /**
+     * 토큰 재발급
+     * @param
+     * @return
+     */
+    @Transactional
+    public LoginResponse refreshToken(String refreshToken){
+        TokenDto tokenDto = tokenService.refresh(refreshToken);
+
+        // 토큰 식별자 가져오기
+        String username = tokenService.getTokenSubject(refreshToken);
+
+        // 사용자 정보 가져오기
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+
+        return LoginResponse.builder()
+                .access_token(tokenDto.accessToken())
+                .refresh_token(tokenDto.refreshToken())
+                .username(user.getUsername())
+                .build();
+    }
+
+    /**
+     * 로그아웃
+     * @param
+     * @return
+     */
+    @Transactional
+    public void logout(){
+
     }
 }

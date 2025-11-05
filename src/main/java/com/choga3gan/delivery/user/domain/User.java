@@ -47,6 +47,8 @@ public class User extends Auditable {
     @Column(name="is_public")
     private Boolean publicInfo;
 
+    private String refreshToken;
+
     @ToString.Exclude //  테스트용으로 잠깐 배제
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Role role;
@@ -61,6 +63,15 @@ public class User extends Auditable {
         this.role = role;
     }
 
+    // 리프레시 토큰 업데이트
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    // 리프레시 토큰 딜리트
+    public void deleteRefreshToken() {
+        this.refreshToken = null;
+    }
 
     public void changeRoles(List<Role> roles) {
 

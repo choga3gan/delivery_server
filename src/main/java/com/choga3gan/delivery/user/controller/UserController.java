@@ -20,6 +20,7 @@ package com.choga3gan.delivery.user.controller;
 import com.choga3gan.delivery.global.security.UserDetailsImpl;
 import com.choga3gan.delivery.user.dto.LoginRequest;
 import com.choga3gan.delivery.user.dto.LoginResponse;
+import com.choga3gan.delivery.user.dto.RefreshRequest;
 import com.choga3gan.delivery.user.dto.SignupRequest;
 import com.choga3gan.delivery.user.repository.UserRepository;
 import com.choga3gan.delivery.user.service.UserService;
@@ -66,6 +67,17 @@ public class UserController {
     }
 
     /**
+     * 토큰 재발급
+     * @param
+     * @return
+     */
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshRequest request) {
+        LoginResponse response = userService.refreshToken(request.getRefreshToken());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * 로그아웃
      * @param
      * @return
@@ -101,11 +113,6 @@ public class UserController {
      * @return
      */
 
-    /**
-     * 토큰 재발급
-     * @param
-     * @return
-     */
 
     //테스트용
     @GetMapping("profile")
