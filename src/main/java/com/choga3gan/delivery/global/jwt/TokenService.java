@@ -55,6 +55,7 @@ public class TokenService {
         this.properties = properties;
         this.repository = repository;
 
+        //시크릿 값을 복호화 하여 키 변수에 할당
         byte[] keyBytes = Decoders.BASE64.decode(properties.getSecret());
         key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -69,18 +70,32 @@ public class TokenService {
         //사용자 이름 가져옴
         User user = repository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
-        //토큰 만료 시간
-        Date date = new Date(new Date().getTime() + properties.getValidTime() * 1000L);
+        // 토큰 만료 시간
+        // 엑세스 토큰
+        Date now = new Date();
+        Date accessExpire = new Date(now.getTime() + properties.getValidTime() * 1000L);
+        Date refreshExpire = new Date(now.getTime() + properties.getValidTime() * 1000L);
 
-        //토큰 생성
+
+        //엑세스 토큰 생성
         String accessToken = Jwts.builder()
                 .setSubject(username) // 식별자
-                .signWith(key, SignatureAlgorithm.HS512) //
-                .setExpiration(date)
+                .setIssuedAt(now)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(accessExpire)
+                .compact();
+
+        //리프레시 토큰 생성
+        String refreshToken = Jwts.builder()
+                .setSubject(username) // 식별자
+                .setIssuedAt(now)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(refreshExpire)
                 .compact();
 
         return TokenDto.builder()
                 .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .expireTime(properties.getValidTime())
                 .build();
     }
@@ -148,7 +163,7 @@ public class TokenService {
 
         // TODO : 토큰 만료 전에 명시적으로 로그아웃을 한 경우, 토큰이 유효해도 검증 실패 처리
 
-        if (StringUtils.isEmpty(message)) {// 임포트 확인하기
+        if (!StringUtils.isEmpty(message)) {// 임포트 확인하기
             throw new UnauthorizedException(message);
         }
         }
