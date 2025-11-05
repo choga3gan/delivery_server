@@ -27,10 +27,12 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -125,5 +127,24 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ProductResponse.from(product));
+    }
+
+    @Operation(
+            summary = "관리자 권한으로 모든 상품 조회",
+            description = """
+            매장에 상관없이 DB에 등록되어 있는 모든 상품을 조회합니다. <br>
+            MANAGER 이상의 권한이 필요합니다.
+            """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
+            @ApiResponse(responseCode = "403", description = "권한 없음")
+    })
+    @GetMapping("/v1/products")
+    public ResponseEntity<Page<ProductResponse>> getAllProductsForManager() {
+        Page<Product> productPage = productService.getProductsForManager();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(productPage.map(ProductResponse::from));
     }
 }

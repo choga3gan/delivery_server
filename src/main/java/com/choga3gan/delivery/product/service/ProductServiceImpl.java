@@ -56,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Product createProduct(UUID storeId, ProductRequest productRequest) {
+        // TODO: 권한 확인 필요
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
 
         List<Category> categories = categoryRepository.findAllByCategoryIdIn(productRequest.getCategoryIds());
@@ -104,6 +105,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Page<Product> getProductsForManager() {
+        // TODO: 권한 확인 필요
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         return productRepository.findAll(pageable);
     }
@@ -117,6 +119,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Product updateProduct(UUID storeId, UUID productId, ProductRequest productRequest) {
+        // TODO: 권한 확인 필요
         Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(StoreNotFoundException::new);
         if (productRequest.getProductImg() != null) {
             product.changeProductImg(productRequest.getProductImg());
@@ -163,6 +166,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public void removeProduct(UUID storeId, UUID productId) {
+        // TODO: 권한 확인 필요
         Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId)
                 .orElseThrow(StoreNotFoundException::new);
         product.softDelete(securityUtilService.getCurrentUsername());
