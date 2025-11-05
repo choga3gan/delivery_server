@@ -37,3 +37,4 @@ out/
 generated/
 .env
 application-local.yml
+.log
