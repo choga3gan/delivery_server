@@ -94,4 +94,36 @@ public class ProductController {
                 .status(HttpStatus.OK)
                 .body(productPage.map(ProductResponse::from));
     }
+
+    @Operation(
+            summary = "특정 상품 상세 정보 조회",
+            description = """
+            특정 상품 하나의 상세 정보를 조회합니다.
+            """
+    )
+    @Parameters({
+            @Parameter(
+                    name = "storeId",
+                    description = "상품이 포함된 매장 Id",
+                    example = "123550e8400-e29b-41d4-a716-446655440000",
+                    required = true
+            ),
+            @Parameter(
+                    name = "productId",
+                    description = "조회할 상품 Id",
+                    example = "123550e8400-e29b-41d4-a716-446655440000",
+                    required = true
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
+    })
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable UUID storeId, @PathVariable UUID productId) {
+        Product product = productService.getProduct(storeId, productId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ProductResponse.from(product));
+    }
 }
