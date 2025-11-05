@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getProducts(UUID storeId) {
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-        return productRepository.findByStoreId(storeId, pageable);
+        return productRepository.findAllByStore_StoreId(storeId, pageable);
     }
 
     /**
@@ -93,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Product getProduct(UUID storeId, UUID productId) {
-        return productRepository.findByStoreIdAndProductId(storeId, productId).orElseThrow(StoreNotFoundException::new);
+        return productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(StoreNotFoundException::new);
     }
 
     /**
@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Product updateProduct(UUID storeId, UUID productId, ProductRequest productRequest) {
-        Product product = productRepository.findByStoreIdAndProductId(storeId, productId).orElseThrow(StoreNotFoundException::new);
+        Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(StoreNotFoundException::new);
         if (productRequest.getProductImg() != null) {
             product.changeProductImg(productRequest.getProductImg());
         }
@@ -163,7 +163,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public void removeProduct(UUID storeId, UUID productId) {
-        Product product = productRepository.findByStoreIdAndProductId(storeId, productId)
+        Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId)
                 .orElseThrow(StoreNotFoundException::new);
         product.softDelete(securityUtilService.getCurrentUsername());
     }

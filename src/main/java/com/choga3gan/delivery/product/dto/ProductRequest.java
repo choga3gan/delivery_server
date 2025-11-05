@@ -19,6 +19,7 @@ package com.choga3gan.delivery.product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,4 +49,14 @@ public class ProductRequest {
 
     @Schema(description = "상품 소개 설명", example = "둘이 먹다 하나가 죽어도 모르는 떡볶이")
     private String description;
+
+    @Builder
+    public ProductRequest(List<UUID> categoryIds, String productName, Double price, Boolean open, String productImg, String description) {
+        this.categoryIds = categoryIds;
+        this.productName = productName;
+        this.price = price;
+        this.open = open;
+        this.productImg = productImg;
+        this.description = description;
+    }
 }

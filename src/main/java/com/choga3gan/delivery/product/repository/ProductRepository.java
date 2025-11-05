@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
-    Page<Product> findByStoreId(UUID storeId, Pageable pageable);
-    Optional<Product> findByStoreIdAndProductId(UUID storeId, UUID productId);
+    Page<Product> findAllByStore_StoreId(UUID storeId, Pageable pageable);
+    Optional<Product> findByStore_StoreIdAndProductId(UUID storeId, UUID productId);
     Page<Product> findAll(Pageable pageable);
 }
