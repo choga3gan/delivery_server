@@ -57,8 +57,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> { authorize
                         // 인증 없이 접근 가능한 경로
                         .requestMatchers("/v1/users/**").permitAll()
-                        // 공개 get API (매장 목목, 메뉴 보기 등)
-                        .requestMatchers(HttpMethod.GET, "/v1/stores/**", "/v1/product/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/stores/**", "/v1/product/**").permitAll()// 공개 get API (매장 목목, 메뉴 보기 등)
                         .requestMatchers("/v1/users/profile").hasRole("USER") // 해당 경로는 해당 권한을 가진 사람만 접근 가능
                         .anyRequest().authenticated(); // 그 외 모든 요청은 인증 필요
                 });

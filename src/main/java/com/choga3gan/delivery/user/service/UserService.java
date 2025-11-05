@@ -6,6 +6,7 @@ import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.dto.LoginRequest;
 import com.choga3gan.delivery.user.dto.LoginResponse;
 import com.choga3gan.delivery.user.dto.SignupRequest;
+import com.choga3gan.delivery.user.exception.AuthHeaderException;
 import com.choga3gan.delivery.user.exception.UserNotFoundException;
 import com.choga3gan.delivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +93,26 @@ public class UserService {
      * @return
      */
     @Transactional
-    public void logout(){
+    public void logout(String authorizationHeader, String refreshToken){
+        if(!authorizationHeader.equals("Bearer ")){
+            throw new AuthHeaderException();
+        }
+        // Bearer 제거
+        String token = authorizationHeader.substring(7);
 
+        // 토큰 식별자 가져오기
+        String username = tokenService.getTokenSubject(token);
+
+        // 사용자 조회
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(UserNotFoundException::new);
+
+        // refreshToken 비교 및 삭제
+        if(user.getRefreshToken() != null && user.getRefreshToken().equals(token)){
+            user.deleteRefreshToken();
+            userRepository.save(user);
+        } else {
+            throw new AuthHeaderException("리프레시 토큰이 유효하지 않습니다.");
+        }
     }
 }

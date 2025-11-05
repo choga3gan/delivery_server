@@ -18,10 +18,7 @@
 package com.choga3gan.delivery.user.controller;
 
 import com.choga3gan.delivery.global.security.UserDetailsImpl;
-import com.choga3gan.delivery.user.dto.LoginRequest;
-import com.choga3gan.delivery.user.dto.LoginResponse;
-import com.choga3gan.delivery.user.dto.RefreshRequest;
-import com.choga3gan.delivery.user.dto.SignupRequest;
+import com.choga3gan.delivery.user.dto.*;
 import com.choga3gan.delivery.user.repository.UserRepository;
 import com.choga3gan.delivery.user.service.UserService;
 import com.choga3gan.delivery.user.validator.SignupValidator;
@@ -82,6 +79,13 @@ public class UserController {
      * @param
      * @return
      */
+    public ResponseEntity<Void> logout(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @Valid @RequestBody LogoutRequest request) {
+
+        userService.logout(authorizationHeader, request.getRefreshToken());
+        return  ResponseEntity.ok().build();
+    }
 
     /**
      * 사용자 목록 조회
