@@ -18,11 +18,6 @@ springdoc:
   paths-to-match:
     - /v1/**
 
-#JWT 설정
-user.jwt:
-  secret: ${{secrets.JWT_SECRET}}
-  valid-time: ${{secrets.JWT_VALID_TIME}}
-
 # 로그 설정
 logging:
   level:
