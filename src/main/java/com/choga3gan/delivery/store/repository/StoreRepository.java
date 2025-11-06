@@ -20,6 +20,7 @@ package com.choga3gan.delivery.store.repository;
 import com.choga3gan.delivery.store.domain.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -27,6 +28,9 @@ import java.util.UUID;
 
 public interface StoreRepository extends JpaRepository<Store, UUID> {
 
+    @EntityGraph(attributePaths = "categories")
     Optional<Store> findByStoreId(UUID storeId);
+
+    @EntityGraph(attributePaths = "categories")
     Page<Store> findAll(Pageable pageable);
 }

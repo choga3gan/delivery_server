@@ -1,7 +1,7 @@
 /**
  * @package     com.choga3gan.delivery.product.dto
  * @class       DescriptionDTO
- * @description 상품 소개 문구 요청 DTO
+ * @description 상품 소개 문구 답변 DTO
  *
  * @author      jinnk0
  * @since       2025. 11. 6.
@@ -26,15 +26,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Schema(description = "상품 소개 문구 요청 DTO")
-public class DescriptionRequest {
+@Schema(description = "상품 소개 문구 답변 DTO")
+public class DescriptionResponse {
 
-    @Schema(description = "상품 설명을 포함하여 상품 소개 문구를 요청",
-            example = "신당동에서 판매하고 있는 아주 맵지만 맛있는 떡볶이의 상품 소개 작성 부탁해")
-    private String request;
+    @Schema(description = "50자 이내의 상품 소개 문구",
+            example = "신당동 떡볶이: 혀는 얼얼, 손은 멈출 수 없는 마성의 매운맛!")
+    private String response;
 
     @Builder
-    public DescriptionRequest(String request) {
-        this.request = request;
+    public DescriptionResponse(String response) {
+        this.response = response;
     }
 }
