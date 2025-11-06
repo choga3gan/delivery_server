@@ -39,14 +39,12 @@ import java.util.stream.Collectors;
 public class Product extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "product_id")
     private UUID productId;
 
     @Column(nullable = false)
     private String productName;
 
-    @Column(nullable = false)
-    private double price;
+    private int price;
 
     @Column(name = "is_public")
     private boolean open = true;
@@ -69,10 +67,10 @@ public class Product extends Auditable {
     private Store store;
 
     @Builder
-    public Product(String productName, double price, String productImg,
+    public Product(String productName, Number price, String productImg,
                    String description, List<Category> categories, Store store) {
         this.productName = productName;
-        this.price = price;
+        this.price = price.intValue();
         this.productImg = productImg;
         this.description = description;
         this.categories = categories;
@@ -93,8 +91,8 @@ public class Product extends Auditable {
      *
      * @param price
      */
-    public void changePrice(double price) {
-        this.price = price;
+    public void changePrice(Number price) {
+        this.price = price.intValue();
     }
 
     /**
