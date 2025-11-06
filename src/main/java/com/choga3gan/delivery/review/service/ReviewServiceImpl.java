@@ -18,6 +18,9 @@
 package com.choga3gan.delivery.review.service;
 
 import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
+import com.choga3gan.delivery.order.domain.Order;
+import com.choga3gan.delivery.order.domain.OrderStatus;
+import com.choga3gan.delivery.order.repository.OrderRepository;
 import com.choga3gan.delivery.review.domain.Review;
 import com.choga3gan.delivery.review.dto.ReviewRequest;
 import com.choga3gan.delivery.review.event.ReviewCreatedEvent;
@@ -36,6 +39,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -47,6 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final SecurityUtilService securityUtil;
     private final ApplicationEventPublisher publisher;
+    private final OrderRepository orderRepository;
 
     /**
      * 새로운 리뷰 추가
@@ -58,7 +64,13 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public Review createReview(ReviewRequest reviewRequest) {
-        // TODO : 리뷰 쓸 수 있는지 먼저 확인
+        List<Order> orders = orderRepository.findByUserIdAndOrderItems_StoreIdAndOrderStatusAndReviewed(
+                reviewRequest.getUserId(), reviewRequest.getStoreId(), OrderStatus.DELIVERY_COMPLETED, false
+        );
+        if (orders.isEmpty()) {
+            throw new ReviewNotEditableException();
+        }
+
         Review review = Review.builder()
                 .username(reviewRequest.getUsername())
                 .content(reviewRequest.getContent())
@@ -67,6 +79,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .rating(reviewRequest.getRating())
                 .build();
 
+        orders.getFirst().changeReviewed(true);
         publisher.publishEvent(new ReviewCreatedEvent(review.getStoreId(), review.getRating()));
         return reviewRepository.save(review);
     }

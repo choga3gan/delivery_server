@@ -6,10 +6,12 @@ import com.choga3gan.delivery.order.domain.Price;
 import com.choga3gan.delivery.order.domain.RoleCheck;
 import com.choga3gan.delivery.order.dto.OrderItemRequest;
 import com.choga3gan.delivery.order.dto.OrderRequest;
+import com.choga3gan.delivery.order.event.PaymentRequestEvent;
 import com.choga3gan.delivery.order.repository.OrderRepository;
 import com.choga3gan.delivery.product.domain.Product;
 import com.choga3gan.delivery.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,6 +28,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final RoleCheck roleCheck;
+    private final ApplicationEventPublisher publisher;
 
     /**
      * 주문 등록
@@ -47,6 +50,7 @@ public class OrderService {
                 .build();
 
         orderRepository.save(order);
+        publisher.publishEvent(PaymentRequestEvent.class);
 
         return order.getOrderId();
     }

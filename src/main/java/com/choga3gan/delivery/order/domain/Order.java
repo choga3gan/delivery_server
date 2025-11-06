@@ -21,6 +21,7 @@ import com.choga3gan.delivery.global.domain.Auditable;
 import com.choga3gan.delivery.global.event.Events;
 import com.choga3gan.delivery.order.event.OrderAcceptEvent;
 import com.choga3gan.delivery.order.event.OrderRefundEvent;
+import com.choga3gan.delivery.order.event.PaymentCancelEvent;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -121,13 +122,14 @@ public class Order extends Auditable {
 
             //결제 취소 요청
             Events.trigger(new OrderRefundEvent(orderId));
+            Events.trigger(new PaymentCancelEvent(orderId));
         }
     }
 
     /**
      * 주문서 수정
      *  - 주문 정보 변경은 주문접수, 입금확인으로 한정
-     * @param orderId
+     * @param userId
      * @param name
      * @param email
      * @param address
@@ -140,5 +142,9 @@ public class Order extends Auditable {
         userName = name;
         userEmail = email;
         userAddress = address;
+    }
+
+    public void changeReviewed(boolean reviewed) {
+        this.reviewed = reviewed;
     }
 }
