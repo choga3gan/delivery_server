@@ -28,12 +28,12 @@ import com.choga3gan.delivery.store.dto.StaffDto;
 import com.choga3gan.delivery.store.dto.StoreRequest;
 import com.choga3gan.delivery.store.exception.StoreNotFoundException;
 import com.choga3gan.delivery.store.repository.StoreRepository;
-import com.choga3gan.delivery.store.util.OwnerRoleCheck;
-import com.choga3gan.delivery.store.util.RoleCheck;
+import com.choga3gan.delivery.user.domain.Role;
 import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.domain.UserId;
 import com.choga3gan.delivery.user.exception.UserNotFoundException;
 import com.choga3gan.delivery.user.repository.UserRepository;
+import com.choga3gan.delivery.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -55,6 +55,7 @@ public class StoreServiceImpl implements StoreService {
     private final UserRepository userRepository;
     private final SecurityUtilService securityUtil;
     private final CategoryRepository categoryRepository;
+    private final UserService userService;
 
     /**
      * 신규 매장 생성
@@ -83,7 +84,7 @@ public class StoreServiceImpl implements StoreService {
                 .user(user)
                 .build();
 
-        // TODO : 매장을 등록한 회원의 권한을 OWNER로 변경
+        userService.changeUserRole(user.getUsername(), "ROLE_OWNER");
 
         return storeRepository.save(store);
     }
@@ -118,6 +119,7 @@ public class StoreServiceImpl implements StoreService {
      * @return 직원 목록 반환
      */
     @Override
+    @CheckStoreAccess
     public Set<Staff> getStaff(UUID storeId) {
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
         return store.getStaffs();
@@ -132,10 +134,9 @@ public class StoreServiceImpl implements StoreService {
      * @return Store 객체
      */
     @Override
+    @CheckStoreAccess
     public Store updateStore(UUID storeId, StoreRequest request) {
-        RoleCheck roleCheck = new OwnerRoleCheck();
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
-        roleCheck.check(store);
         if (request.getStoreName() != null) {
             store.changeStoreName(request.getStoreName());
         }
@@ -163,12 +164,13 @@ public class StoreServiceImpl implements StoreService {
      * @param storeId, close
      */
     @Override
+    @CheckStoreAccess
     public void closeStore(UUID storeId, boolean close) {
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
         if (close) {
-            store.close(new OwnerRoleCheck());
+            store.close();
         } else  {
-            store.open(new OwnerRoleCheck());
+            store.open();
         }
     }
 
@@ -179,12 +181,17 @@ public class StoreServiceImpl implements StoreService {
      * @return 등록된 직원 목록 반환
      */
     @Override
+    @CheckStoreAccess
     public Set<Staff> updateStaff(UUID storeId, List<StaffDto> staffs) {
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
         List<Staff> staffEntities = staffs.stream()
                 .map(dto -> new Staff(UserId.of(dto.getId())))
                 .toList();
-        store.addStaff(staffEntities, new OwnerRoleCheck());
+        store.addStaff(staffEntities);
+        staffs.forEach(staff -> {
+            User user = userRepository.findById(staff.getId()).orElseThrow(UserNotFoundException::new);
+            userService.changeUserRole(user.getUsername(), "ROLE_STAFF");
+        });
         return store.getStaffs();
     }
 
@@ -195,12 +202,17 @@ public class StoreServiceImpl implements StoreService {
      * @param  storeId, staffs
      */
     @Override
+    @CheckStoreAccess
     public void removeStaff(UUID storeId, List<StaffDto> staffs) {
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
         List<Staff> staffEntities = staffs.stream()
                 .map(dto -> new Staff(UserId.of(dto.getId())))
                 .toList();
-        store.removeStaff(staffEntities, new OwnerRoleCheck());
+        store.removeStaff(staffEntities);
+        staffs.forEach(staff -> {
+            User user = userRepository.findById(staff.getId()).orElseThrow(UserNotFoundException::new);
+            userService.changeUserRole(user.getUsername(), "ROLE_CUSTOMER");
+        });
     }
 
     /**
@@ -210,8 +222,14 @@ public class StoreServiceImpl implements StoreService {
      * @param  storeId
      */
     @Override
+    @CheckStoreAccess
     public void removeStore(UUID storeId) {
+        User user = userRepository.findByUsername(securityUtil.getCurrentUsername())
+                .orElseThrow(UserNotFoundException::new);
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
         store.softDelete(securityUtil.getCurrentUsername());
+        if (storeRepository.findByUser(user).isEmpty()) {
+            userService.changeUserRole(user.getUsername(), "ROLE_CUSTOMER");
+        }
     }
 }

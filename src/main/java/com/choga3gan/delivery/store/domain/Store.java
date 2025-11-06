@@ -19,9 +19,6 @@ package com.choga3gan.delivery.store.domain;
 
 import com.choga3gan.delivery.category.domain.Category;
 import com.choga3gan.delivery.global.domain.Auditable;
-import com.choga3gan.delivery.store.exception.StoreNotEditableException;
-import com.choga3gan.delivery.store.util.OwnerRoleCheck;
-import com.choga3gan.delivery.store.util.RoleCheck;
 import com.choga3gan.delivery.store.util.StaffConverter;
 import com.choga3gan.delivery.user.domain.User;
 import jakarta.persistence.*;
@@ -142,8 +139,7 @@ public class Store extends Auditable {
      * 매장 오픈
      *
      */
-    public void open(OwnerRoleCheck roleCheck) {
-        roleCheck.check(this);
+    public void open() {
         this.closed = false;
     }
 
@@ -151,8 +147,7 @@ public class Store extends Auditable {
      * 매장 마감
      *
      */
-    public void close(OwnerRoleCheck roleCheck) {
-        roleCheck.check(this);
+    public void close() {
         this.closed = true;
     }
 
@@ -201,18 +196,14 @@ public class Store extends Auditable {
      *
      * @param staffs
      */
-    public void addStaff(Collection<Staff> staffs, RoleCheck roleCheck) {
-        if (!roleCheck.check(this)) {
-            throw new StoreNotEditableException();
-        }
+    public void addStaff(Collection<Staff> staffs) {
         this.staffs = Objects.requireNonNullElseGet(this.staffs, HashSet::new);
-        staffs.addAll(staffs);
-        // TODO : 추가된 사람이 STAFF 권한을 갖게 됨
+        this.staffs.addAll(staffs);
     }
 
 
-    public void addStaff(Staff staff, RoleCheck roleCheck) {
-        addStaff(Set.of(staff), roleCheck);
+    public void addStaff(Staff staff) {
+        addStaff(Set.of(staff));
     }
 
     /**
@@ -221,15 +212,12 @@ public class Store extends Auditable {
      *
      * @param staffs
      */
-    public void removeStaff(Collection<Staff> staffs, RoleCheck roleCheck) {
-        if (roleCheck.check(this)) {
-            throw new StoreNotEditableException();
-        }
-        staffs.removeAll(staffs);
+    public void removeStaff(Collection<Staff> staffs) {
+        this.staffs.removeAll(staffs);
     }
 
-    public void removeStaff(Staff staff, RoleCheck roleCheck) {
-        removeStaff(Set.of(staff), roleCheck);
+    public void removeStaff(Staff staff) {
+        removeStaff(Set.of(staff));
     }
 
     /**

@@ -30,12 +30,15 @@ import com.choga3gan.delivery.product.repository.ProductRepository;
 import com.choga3gan.delivery.store.domain.Store;
 import com.choga3gan.delivery.store.exception.StoreNotFoundException;
 import com.choga3gan.delivery.store.repository.StoreRepository;
+import com.choga3gan.delivery.store.service.CheckStoreAccess;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,8 +63,8 @@ public class ProductServiceImpl implements ProductService {
      * @return Product
      */
     @Override
+    @CheckStoreAccess
     public Product createProduct(UUID storeId, ProductRequest productRequest) {
-        // TODO: 권한 확인 필요
         Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
 
         List<Category> categories = categoryRepository.findAllByCategoryIdIn(productRequest.getCategoryIds());
@@ -109,8 +112,8 @@ public class ProductServiceImpl implements ProductService {
      * @return Product 객체를 페이지 형태로 반환
      */
     @Override
+    @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")
     public Page<Product> getProductsForManager() {
-        // TODO: 권한 확인 필요
         Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
         return productRepository.findAll(pageable);
     }
@@ -123,8 +126,8 @@ public class ProductServiceImpl implements ProductService {
      * @return Product
      */
     @Override
+    @CheckStoreAccess
     public Product updateProduct(UUID storeId, UUID productId, ProductRequest productRequest) {
-        // TODO: 권한 확인 필요
         Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(ProductNotFoundException::new);
         if (productRequest.getProductImg() != null) {
             product.changeProductImg(productRequest.getProductImg());
@@ -172,8 +175,8 @@ public class ProductServiceImpl implements ProductService {
      * @param storeId, productId
      */
     @Override
+    @CheckStoreAccess
     public void removeProduct(UUID storeId, UUID productId) {
-        // TODO: 권한 확인 필요
         Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId)
                 .orElseThrow(StoreNotFoundException::new);
         product.softDelete(securityUtilService.getCurrentUsername());
