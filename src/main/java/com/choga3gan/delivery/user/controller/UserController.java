@@ -124,6 +124,17 @@ public class UserController {
     }
 
     /**
+     * 사용자 역할 변경
+     * @param
+     * @return
+     */
+    @PatchMapping("/role")
+    public ResponseEntity<Void> changeUserRole(@RequestBody ChangeRoleRequest request) {
+        userService.changeUserRole(request.getUserName(), request.getRoleName());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * 사용자 목록 조회
      * @param
      * @return
@@ -151,12 +162,6 @@ public class UserController {
      * 사용자 삭제
      * @param
      * @return
-     */
-
-    /**
-     * 사용자 역할 변경
-     * @param  
-     * @return 
      */
 
     //테스트용

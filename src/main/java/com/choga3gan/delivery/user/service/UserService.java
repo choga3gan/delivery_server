@@ -134,7 +134,12 @@ public class UserService {
      * @param
      * @return
      */
-    public void userRoleChange(User user, Role role){
+    @Transactional
+    public void changeUserRole(String userName, String roleName){
+        User user = userRepository.findByUsername(userName).orElseThrow(UserNotFoundException::new);
+        Role role = roleRepository.findByRoleName(roleName).orElseThrow(RoleNotFoundException::new);
 
+        // 사용자 역할 변경
+        user.changeRoles(role);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UserId> {
     boolean existsByUsername(String username);
@@ -17,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, UserId> {
      */
     @EntityGraph(attributePaths = "role")
     Optional<User> findByUsername(String username);
+    Optional<User> findById(UUID id);
+    Optional<User> findByEmail(String email);
 }
