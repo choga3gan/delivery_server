@@ -23,6 +23,7 @@ import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import com.choga3gan.delivery.product.domain.Product;
 import com.choga3gan.delivery.product.dto.DescriptionRequest;
 import com.choga3gan.delivery.product.dto.ProductRequest;
+import com.choga3gan.delivery.product.exception.ProductNotFoundException;
 import com.choga3gan.delivery.product.repository.ProductRepository;
 import com.choga3gan.delivery.store.domain.Store;
 import com.choga3gan.delivery.store.exception.StoreNotFoundException;
@@ -94,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Product getProduct(UUID storeId, UUID productId) {
-        return productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(StoreNotFoundException::new);
+        return productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(ProductNotFoundException::new);
     }
 
     /**
@@ -120,7 +121,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product updateProduct(UUID storeId, UUID productId, ProductRequest productRequest) {
         // TODO: 권한 확인 필요
-        Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(StoreNotFoundException::new);
+        Product product = productRepository.findByStore_StoreIdAndProductId(storeId, productId).orElseThrow(ProductNotFoundException::new);
         if (productRequest.getProductImg() != null) {
             product.changeProductImg(productRequest.getProductImg());
         }

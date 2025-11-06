@@ -1,3 +1,20 @@
+/**
+ * @package     com.choga3gan.delivery.review.service
+ * @class       ReviewService
+ * @description Review Service 개발을 위한 인터페이스
+ *
+ * @author      jinnk0
+ * @since       2025. 11. 6.
+ * @version     1.0
+ *
+ * <pre>
+ * == Modification Information ==
+ * Date          Author        Description
+ * ----------    -----------   ---------------------------
+ * 2025. 11. 6.        jinnk0       최초 생성
+ * </pre>
+ */
+
 package com.choga3gan.delivery.review.service;
 
 import com.choga3gan.delivery.review.domain.Review;
