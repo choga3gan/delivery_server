@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,9 @@ public class SwaggerConfig {
         // Security Requirement 정의
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("BearerAuth");
 
+        Server server = new Server();
+        server.setUrl("https://api3.sparta-project.xyz");
+
         return new OpenAPI()
                 .info(new Info()
                         .title("배달 서비스 REST API")
@@ -36,7 +40,8 @@ public class SwaggerConfig {
                         .contact(new Contact().email(""))
                 )
                 .addSecurityItem(securityRequirement)
-                .schemaRequirement("BearerAuth", securityScheme);
+                .schemaRequirement("BearerAuth", securityScheme)
+                .addServersItem(server);
     }
 
     @Bean
