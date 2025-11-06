@@ -70,4 +70,6 @@ jobs:
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e DB_DDL_AUTO=update \
+            -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+            -e JWT_VALID_TIME=${{ secrets.JWT_VALID_TIME }} \
             ${{ env.IMAGE_URI }}
