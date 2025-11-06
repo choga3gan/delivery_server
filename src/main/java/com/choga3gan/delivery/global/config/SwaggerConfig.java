@@ -1,8 +1,11 @@
 package com.choga3gan.delivery.global.config;
 
+
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +15,36 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
     @Bean
+    public OpenAPI customOpenAPI() {
+
+        // Security Scheme 정의
+        SecurityScheme securityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER)
+                .name("Authorization");
+
+        // Security Requirement 정의
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList("BearerAuth");
+
+        return new OpenAPI()
+                .info(new Info()
+                        .title("배달 서비스 REST API")
+                        .description("초가삼간 조 배달 서비스")
+                        .version("1.0.0")
+                        .contact(new Contact().email(""))
+                )
+                .addSecurityItem(securityRequirement)
+                .schemaRequirement("BearerAuth", securityScheme);
+    }
+
+    @Bean
     public GroupedOpenApi userApi(){
         return GroupedOpenApi.builder()
                 .group("user-api") // 스웨거 그룹
                 .displayName("회원 API") // 그룹명
-                .pathsToMatch("v1/user/**") // 그룹에 해당되는 API 주소
+                .pathsToMatch("v1/users/**") // 그룹에 해당되는 API 주소
                 .build();
     }
 
@@ -25,7 +53,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("role-api")
                 .displayName("역할 API")
-                .pathsToMatch("v1/role/**")
+                .pathsToMatch("v1/roles/**")
                 .build();
     }
 
@@ -92,14 +120,4 @@ public class SwaggerConfig {
                 .build();
     }
 
-    @Bean
-    public OpenAPI openAPI(){
-        return new OpenAPI() // 메서드 체이닝 방식
-                .info(new Info()
-                        .title("배달 서비스 REST API")
-                        .description("초가삼간 조 배달 서비스")
-                        .version("1.0.0") // 세미.마이너.패치
-                        .contact(new Contact().email(""))
-                );
-    }
 }

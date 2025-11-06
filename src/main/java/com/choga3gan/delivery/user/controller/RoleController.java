@@ -50,15 +50,6 @@ public class RoleController {
             delete_at 소프트 딜리트 된 항목 제거 필요
             """
     )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "정상 조회"),
-        @ApiResponse(responseCode = "404", description = "역할을 찾을 수 없음")
-    })
-    /**
-     *  역할 전체 조회
-     * @param
-     * @return
-     */
     @GetMapping
     public ResponseEntity<List<Role>> getAllRoles() {
         List<Role> roles = roleService.getAllRoles();

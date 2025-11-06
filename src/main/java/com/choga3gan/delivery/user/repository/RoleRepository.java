@@ -9,7 +9,8 @@ import java.util.UUID;
 
 public interface RoleRepository extends JpaRepository<Role, RoleId> {
     Optional<Role> findById(UUID roleId);
-
+    Optional<Role> findByRoleName(String name);
+    Boolean existsByRoleName(String roleName);
     // 삭제항목 제외
     boolean existsByRoleNameAndDeletedAtIsNull(String name);
 }
