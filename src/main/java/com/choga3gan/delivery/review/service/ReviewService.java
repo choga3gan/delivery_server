@@ -31,6 +31,7 @@ public interface ReviewService {
     // READ
     Page<Review> getReviewsFromStore(UUID storeId);
     Page<Review> getReviewsFromUser(UUID userId);
+    Review getReview(UUID reviewId);
 
     // UPDATE
     Review updateReview(UUID reviewId, ReviewRequest reviewRequest);

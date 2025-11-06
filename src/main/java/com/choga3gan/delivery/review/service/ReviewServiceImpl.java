@@ -36,6 +36,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -95,6 +96,16 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
+     * 특정 리뷰의 상세 정보 조회
+     *
+     * @param  reviewId
+     * @return Review
+     */
+    public Review getReview(UUID reviewId) {
+        return reviewRepository.findByReviewId(reviewId).orElseThrow(ReviewNotFoundException::new);
+    }
+
+    /**
      * 리뷰 수정
      * - 평점 수정 시 수정된 평점에 따라 매장 평점 평균 갱신
      *
@@ -104,6 +115,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review updateReview(UUID reviewId, ReviewRequest reviewRequest) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
+
+        // 본인이 작성한 리뷰만 수정 가능
+        if (!Objects.equals(review.getUsername(), securityUtil.getCurrentUsername())) {
+            throw new ReviewNotEditableException();
+        }
+
+        // null이 아닌 필드만 수정
         if (reviewRequest.getRating() != null) {
             review.changeRating(reviewRequest.getRating());
             publisher.publishEvent(
