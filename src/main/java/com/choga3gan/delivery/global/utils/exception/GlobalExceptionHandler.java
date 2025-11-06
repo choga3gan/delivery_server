@@ -19,6 +19,7 @@ package com.choga3gan.delivery.global.utils.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ import javax.naming.AuthenticationException;
 import java.net.BindException;
 import java.nio.file.AccessDeniedException;
 
+@Slf4j
 @RestControllerAdvice("com.choga3gan.delivery")
 public class GlobalExceptionHandler {
 
@@ -49,6 +51,7 @@ public class GlobalExceptionHandler {
             ConstraintViolationException.class
     })
     public ResponseEntity<ErrorResponse> handleValidationException(Exception ex) {
+
         HttpStatusCode status = HttpStatus.BAD_REQUEST;
         Object message = ex.getMessage();
 
@@ -63,7 +66,7 @@ public class GlobalExceptionHandler {
         } else if (ex instanceof MethodArgumentTypeMismatchException) {
             message = "요청 파라미터의 타입이 일치하지 않습니다.";
         }
-
+        log.error(ex.getMessage(), ex);
         return ResponseEntity.status(status).body(new ErrorResponse(status, message));
     }
 
@@ -77,7 +80,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(Exception ex) {
         HttpStatusCode status = HttpStatus.NOT_FOUND;
         Object message = "대상이 존재하지 않습니다.";
-
+        log.error(ex.getMessage(), ex);
         return ResponseEntity.status(status).body(new ErrorResponse(status, message));
     }
 
@@ -91,7 +94,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAccessDenialException(Exception ex) {
         HttpStatusCode status = HttpStatus.FORBIDDEN;
         Object message = "접근 권한이 부족합니다.";
-
+        log.error(ex.getMessage(), ex);
         return ResponseEntity.status(status).body(new ErrorResponse(status, message));
     }
 
@@ -105,7 +108,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAuthenticationException(Exception ex) {
         HttpStatusCode status = HttpStatus.UNAUTHORIZED;
         Object message = "로그인/토큰 인증이 실패하였습니다.";
-
+        log.error(ex.getMessage(), ex);
         return ResponseEntity.status(status).body(new ErrorResponse(status, message));
     }
 
@@ -119,7 +122,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
         HttpStatusCode status = HttpStatus.INTERNAL_SERVER_ERROR;
         Object message = ex.getMessage();
-
+        log.error(ex.getMessage(), ex);
         return ResponseEntity.status(status).body(new ErrorResponse(status, message));
     }
 
@@ -131,6 +134,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        log.error(ex.getMessage(), ex);
         return ResponseEntity.status(ex.getStatus()).body(new ErrorResponse(ex.getStatus(), ex.getMessage()));
     }
 }
