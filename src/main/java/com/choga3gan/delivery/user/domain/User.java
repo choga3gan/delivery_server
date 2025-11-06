@@ -21,7 +21,6 @@ import com.choga3gan.delivery.global.domain.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @ToString
@@ -71,10 +70,6 @@ public class User extends Auditable {
     // 리프레시 토큰 딜리트
     public void deleteRefreshToken() {
         this.refreshToken = null;
-    }
-
-    public void changeRoles(List<Role> roles) {
-
     }
 
     public void changeRoles(Role role) {
