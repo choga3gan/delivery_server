@@ -2,17 +2,19 @@ package com.choga3gan.delivery.user.service;
 
 import com.choga3gan.delivery.global.jwt.TokenDto;
 import com.choga3gan.delivery.global.jwt.TokenService;
+import com.choga3gan.delivery.user.domain.Role;
 import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.dto.LoginRequest;
 import com.choga3gan.delivery.user.dto.LoginResponse;
 import com.choga3gan.delivery.user.dto.SignupRequest;
 import com.choga3gan.delivery.user.exception.AuthHeaderException;
+import com.choga3gan.delivery.user.exception.RoleNotFoundException;
 import com.choga3gan.delivery.user.exception.UserNotFoundException;
+import com.choga3gan.delivery.user.repository.RoleRepository;
 import com.choga3gan.delivery.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -22,16 +24,27 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final TokenService tokenService;
+    private final RoleRepository roleRepository;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    /**
+     * 회원가입
+     * @param  SignupRequest
+     * @return
+     */
+    @Transactional
     public void SignUp(SignupRequest req){
 
         // 이메일 중복확인
+
+        // 기본 역할 할당
+        Role defaultRole = roleRepository.findByRoleName("ROLE_CUSTOMER")
+                .orElseThrow(RoleNotFoundException::new);
 
         User user = User.builder()
                 .email(req.email())
                 .password(encoder.encode(req.password()))
                 .username(req.username())
+                .role(defaultRole)
                 .build();
 
         userRepository.save(user);
@@ -114,5 +127,14 @@ public class UserService {
         } else {
             throw new AuthHeaderException("리프레시 토큰이 유효하지 않습니다.");
         }
+    }
+
+    /**
+     * 사용자 역할 변경
+     * @param
+     * @return
+     */
+    public void userRoleChange(User user, Role role){
+
     }
 }
