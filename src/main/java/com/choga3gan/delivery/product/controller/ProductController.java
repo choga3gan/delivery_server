@@ -18,6 +18,8 @@
 package com.choga3gan.delivery.product.controller;
 
 import com.choga3gan.delivery.product.domain.Product;
+import com.choga3gan.delivery.product.dto.DescriptionRequest;
+import com.choga3gan.delivery.product.dto.DescriptionResponse;
 import com.choga3gan.delivery.product.dto.ProductRequest;
 import com.choga3gan.delivery.product.dto.ProductResponse;
 import com.choga3gan.delivery.product.service.ProductService;
@@ -27,12 +29,11 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -181,6 +182,33 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ProductResponse.from(product));
+    }
+
+    @Operation(
+        summary = "상품 소개 문구 AI를 통해 추천",
+        description = """
+            입력한 요청에 따른 상품의 소개 문구를 AI를 통해 추천합니다. <br>
+            요청에는 반드시 해당 상품에 대한 설명이 포함되어 있어야 합니다.
+            """
+    )
+    @Parameters({
+        @Parameter(
+            name = "productId",
+            description = "소개 문구를 추가할 상품의 ID",
+            example = "123550e8400-e29b-41d4-a716-446655440000",
+            required = true
+        )
+    })
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "소개 문구 생성 완료")
+    })
+    @PostMapping("/v1/products/{productId}/descriptions")
+    public ResponseEntity<DescriptionResponse> getDescription(@PathVariable UUID productId,
+                                                              @Valid @RequestBody DescriptionRequest descriptionRequest) {
+        String response = productService.addDescriptionFromAI(productId, descriptionRequest);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new DescriptionResponse(response));
     }
 
     @Operation(

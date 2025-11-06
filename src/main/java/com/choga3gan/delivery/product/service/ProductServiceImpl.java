@@ -20,10 +20,12 @@ package com.choga3gan.delivery.product.service;
 import com.choga3gan.delivery.category.domain.Category;
 import com.choga3gan.delivery.category.repository.CategoryRepository;
 import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
+import com.choga3gan.delivery.product.domain.AiDescription;
 import com.choga3gan.delivery.product.domain.Product;
 import com.choga3gan.delivery.product.dto.DescriptionRequest;
 import com.choga3gan.delivery.product.dto.ProductRequest;
 import com.choga3gan.delivery.product.exception.ProductNotFoundException;
+import com.choga3gan.delivery.product.repository.AiDescriptionRepository;
 import com.choga3gan.delivery.product.repository.ProductRepository;
 import com.choga3gan.delivery.store.domain.Store;
 import com.choga3gan.delivery.store.exception.StoreNotFoundException;
@@ -48,6 +50,8 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final SecurityUtilService securityUtilService;
+    private final GeminiApiService geminiApiService;
+    private final AiDescriptionRepository aiDescriptionRepository;
 
     /**
      * 매장에 신규 상품 추가
@@ -156,7 +160,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public String addDescriptionFromAI(UUID productId, DescriptionRequest descriptionRequest) {
-        return "description"; // TODO: AI 연동 및 요청 질문과 요청 문구 저장 (테이블 생성 필요)
+        String response = geminiApiService.generateText(descriptionRequest.getRequest());
+        aiDescriptionRepository.save(new AiDescription(productId, descriptionRequest.getRequest(), response));
+        return response;
     }
 
     /**
