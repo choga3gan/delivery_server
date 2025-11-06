@@ -19,6 +19,9 @@ package com.choga3gan.delivery.global.utils.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,21 +36,20 @@ public class SecurityUtilServiceImpl implements SecurityUtilService {
      */
     @Override
     public String getCurrentUsername() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            return "anonymous";
-//        }
-//
-//        Object principal = authentication.getPrincipal();
-//
-//        if (principal instanceof UserDetails userDetails) {
-//            return userDetails.getUsername();
-//        } else if (principal instanceof String username) {
-//            return username;
-//        } else {
-//            return "unknown";
-//        }
-        return "test_user";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "anonymous";
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails userDetails) {
+            return userDetails.getUsername();
+        } else if (principal instanceof String username) {
+            return username;
+        } else {
+            return "unknown";
+        }
     }
 }

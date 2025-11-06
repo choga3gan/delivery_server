@@ -20,11 +20,15 @@ package com.choga3gan.delivery.review.service;
 import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import com.choga3gan.delivery.review.domain.Review;
 import com.choga3gan.delivery.review.dto.ReviewRequest;
+import com.choga3gan.delivery.review.event.ReviewCreatedEvent;
+import com.choga3gan.delivery.review.event.ReviewDeletedEvent;
+import com.choga3gan.delivery.review.event.ReviewUpdatedEvent;
 import com.choga3gan.delivery.review.exception.ReviewNotEditableException;
 import com.choga3gan.delivery.review.exception.ReviewNotFoundException;
 import com.choga3gan.delivery.review.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +45,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final SecurityUtilService securityUtil;
+    private final ApplicationEventPublisher publisher;
 
     /**
      * 새로운 리뷰 추가
@@ -61,7 +66,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .rating(reviewRequest.getRating())
                 .build();
 
-        // TODO : 매장 평점 평균 갱신 이벤트
+        publisher.publishEvent(new ReviewCreatedEvent(review.getStoreId(), review.getRating()));
         return reviewRepository.save(review);
     }
 
@@ -101,7 +106,8 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         if (reviewRequest.getRating() != null) {
             review.changeRating(reviewRequest.getRating());
-            // TODO : 매장 평점 평균 수정 이벤트
+            publisher.publishEvent(
+                    new ReviewUpdatedEvent(review.getStoreId(), review.getRating(), reviewRequest.getRating()));
         }
         if (reviewRequest.getContent() != null) {
             review.changeContent(reviewRequest.getContent());
@@ -120,6 +126,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         if  (review.getUserId().equals(userId)) {
             review.softDelete(securityUtil.getCurrentUsername());
+            publisher.publishEvent(new ReviewDeletedEvent(review.getStoreId(), review.getRating()));
         } else {
             throw new ReviewNotEditableException();
         }
@@ -135,5 +142,6 @@ public class ReviewServiceImpl implements ReviewService {
     public void removeReviewFromManager(UUID reviewId) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         review.softDelete(securityUtil.getCurrentUsername());
+        publisher.publishEvent(new ReviewDeletedEvent(review.getStoreId(), review.getRating()));
     }
 }
