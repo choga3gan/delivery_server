@@ -41,10 +41,11 @@ public class SwaggerConfig {
 
     @Bean
     public GroupedOpenApi userApi(){
+
         return GroupedOpenApi.builder()
                 .group("user-api") // 스웨거 그룹
                 .displayName("회원 API") // 그룹명
-                .pathsToMatch("v1/users/**") // 그룹에 해당되는 API 주소
+                .pathsToMatch("/v1/users/**") // 그룹에 해당되는 API 주소
                 .build();
     }
 
@@ -53,7 +54,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("role-api")
                 .displayName("역할 API")
-                .pathsToMatch("v1/roles/**")
+                .pathsToMatch("/v1/roles/**")
                 .build();
     }
 
@@ -62,7 +63,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("store-api")
                 .displayName("매장 API")
-                .pathsToMatch("v1/store/**")
+                .pathsToMatch("/v1/stores/**")
                 .build();
     }
 
@@ -71,7 +72,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("product-api")
                 .displayName("상품 API")
-                .pathsToMatch("v1/product/**")
+                .pathsToMatch("/v1/products/**")
                 .build();
     }
 
@@ -80,7 +81,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("review-api")
                 .displayName("리뷰 API")
-                .pathsToMatch("v1/review/**")
+                .pathsToMatch("/v1/review/**")
                 .build();
     }
 
@@ -89,7 +90,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("cart-api")
                 .displayName("카트 API")
-                .pathsToMatch("v1/cart/**")
+                .pathsToMatch("/v1/carts/**")
                 .build();
     }
 
@@ -98,7 +99,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("order-api")
                 .displayName("주문 API")
-                .pathsToMatch("v1/order/**")
+                .pathsToMatch("/v1/orders/**")
                 .build();
     }
 
@@ -107,7 +108,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("payment-api")
                 .displayName("결제 API")
-                .pathsToMatch("v1/payment/**")
+                .pathsToMatch("/v1/payments/**")
                 .build();
     }
 
@@ -116,7 +117,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("category-api")
                 .displayName("카테고리 API")
-                .pathsToMatch("v1/category/**")
+                .pathsToMatch("/v1/categories/**")
                 .build();
     }
 

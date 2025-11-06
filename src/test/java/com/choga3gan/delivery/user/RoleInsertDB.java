@@ -5,11 +5,13 @@ import com.choga3gan.delivery.user.repository.RoleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
+@ActiveProfiles("local")
 public class RoleInsertDB {
     @Autowired
     RoleRepository repository;
