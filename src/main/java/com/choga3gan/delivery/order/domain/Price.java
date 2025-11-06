@@ -45,30 +45,3 @@ public class Price implements Serializable {
         return new Price(this.value * quantity);
     }
 }
-/*package com.choga3gan.delivery.order.domain;
-
-import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-@ToString
-@Getter
-@Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Price {
-    private int value;
-
-    public Price(int value) {
-        this.value = value;
-    }
-
-    public Price add(Price price) {
-        return new Price(this.value + price.value);
-    }
-
-    public Price multiply(int multiplier) {
-        return new Price(value * multiplier);
-    }
-}*/

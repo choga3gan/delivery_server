@@ -22,11 +22,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface StoreRepository extends JpaRepository<Store, UUID> {
+public interface StoreRepository extends JpaRepository<Store, UUID>, QuerydslPredicateExecutor<Store> {
 
     @EntityGraph(attributePaths = "categories")
     Optional<Store> findByStoreId(UUID storeId);

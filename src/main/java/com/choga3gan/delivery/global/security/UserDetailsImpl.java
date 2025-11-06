@@ -20,6 +20,7 @@ package com.choga3gan.delivery.global.security;
 
 import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.exception.UserNotFoundException;
+import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 @ToString
 public class UserDetailsImpl implements UserDetails {
 

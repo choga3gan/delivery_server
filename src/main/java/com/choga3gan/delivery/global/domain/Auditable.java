@@ -39,21 +39,21 @@ public abstract class Auditable {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 
     @CreatedBy
     @Column(updatable = false)
-    private String createdBy;
+    protected String createdBy;
 
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 
     @LastModifiedBy
-    private String updatedBy;
+    protected String updatedBy;
 
-    private LocalDateTime deletedAt;
+    protected LocalDateTime deletedAt;
 
-    private String deletedBy;
+    protected String deletedBy;
 
     public void softDelete(String username) {
         this.deletedAt = LocalDateTime.now();
