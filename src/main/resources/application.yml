@@ -32,8 +32,8 @@ springdoc:
     path: /api-docs.html
     disable-swagger-default-url: true
     doc-expansion: full
-  paths-to-match:
-    - /v1/**
+  #paths-to-match:
+  #  - /v1/**
 
 #JWT 설정
 user.jwt:
