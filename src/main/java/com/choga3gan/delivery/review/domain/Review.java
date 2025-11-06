@@ -57,10 +57,20 @@ public class Review extends Auditable {
         this.rating = rating;
     }
 
+    /**
+     * 리뷰 본문 내용 변경
+     *
+     * @param content
+     */
     public void changeContent(String content) {
         this.content = content;
     }
 
+    /**
+     * 리뷰 평점 수정
+     *
+     * @param  rating
+     */
     public void changeRating(double rating) {
         this.rating = rating;
     }
