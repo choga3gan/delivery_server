@@ -1,6 +1,23 @@
 server:
   port: 3000
 
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB__URL}
+    username: ${DB__USERNAME}
+    password: ${DB__PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+    hibernate:
+      ddl-auto: ${DB__DDL_AUTO}
+    open-in-view: false
+    generate-ddl: true
+
 # OPEN DOC API 설정
 springdoc:
   version: '1.0.0'
@@ -20,8 +37,8 @@ springdoc:
 
 #JWT 설정
 user.jwt:
-  secret: ${{JWT_SECRET}}
-  valid-time: ${{JWT_VALID_TIME}}
+  secret: ${JWT__SECRET}
+  valid-time: ${JWT__VALID_TIME}
 
 # 로그 설정
 logging:
