@@ -24,13 +24,26 @@ public class StoreAuthorizationService {
         User user = userRepository.findByUsername(securityUtilService.getCurrentUsername())
                 .orElseThrow(UserNotFoundException::new);
 
+        Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+
         if (user.hasRole("ROLE_MANAGER") || user.hasRole("ROLE_MASTER")) return;
 
         if (user.hasRole("ROLE_OWNER")) {
-            Store store = storeRepository.findByStoreId(storeId).orElseThrow(StoreNotFoundException::new);
             if (!store.getUser().getId().getId().equals(user.getId().getId())) {
                 throw new StoreNotEditableException();
             }
+        }
+
+        if (user.hasRole("ROLE_STAFF")) {
+            boolean isStaffOfStore = store.getStaffs().stream()
+                    .anyMatch(staff -> staff.getId().getId().equals(user.getId().getId()));
+            if (!isStaffOfStore) {
+                throw new StoreNotEditableException();
+            }
+        }
+
+        if (user.hasRole("ROLE_CUSTOMER")) {
+            throw new StoreNotEditableException();
         }
     }
 }

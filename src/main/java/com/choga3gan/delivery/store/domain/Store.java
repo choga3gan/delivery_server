@@ -198,8 +198,7 @@ public class Store extends Auditable {
      */
     public void addStaff(Collection<Staff> staffs) {
         this.staffs = Objects.requireNonNullElseGet(this.staffs, HashSet::new);
-        staffs.addAll(staffs);
-        // TODO : 추가된 사람이 STAFF 권한을 갖게 됨
+        this.staffs.addAll(staffs);
     }
 
 
@@ -214,11 +213,11 @@ public class Store extends Auditable {
      * @param staffs
      */
     public void removeStaff(Collection<Staff> staffs) {
-        staffs.removeAll(staffs);
+        this.staffs.removeAll(staffs);
     }
 
-    public void removeStaff(Staff staff, RoleCheck roleCheck) {
-        removeStaff(Set.of(staff), roleCheck);
+    public void removeStaff(Staff staff) {
+        removeStaff(Set.of(staff));
     }
 
     /**

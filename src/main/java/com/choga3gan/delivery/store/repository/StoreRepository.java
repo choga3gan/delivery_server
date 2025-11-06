@@ -18,12 +18,14 @@
 package com.choga3gan.delivery.store.repository;
 
 import com.choga3gan.delivery.store.domain.Store;
+import com.choga3gan.delivery.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,4 +36,6 @@ public interface StoreRepository extends JpaRepository<Store, UUID>, QuerydslPre
 
     @EntityGraph(attributePaths = "categories")
     Page<Store> findAll(Pageable pageable);
+
+    List<Store> findByUser(User user);
 }
