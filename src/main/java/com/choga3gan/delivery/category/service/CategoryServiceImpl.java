@@ -94,7 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param categoryId
      */
     @Override
-    public void deleteCategory(UUID categoryId) {
+    public void removeCategory(UUID categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(CategoryNotFoundException::new);
         category.softDelete(securityUtil.getCurrentUsername());

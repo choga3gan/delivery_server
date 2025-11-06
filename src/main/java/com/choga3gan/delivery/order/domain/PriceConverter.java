@@ -34,22 +34,3 @@ public class PriceConverter implements AttributeConverter<Price, Integer> {
         return dbData == null ? null : new Price(dbData);
     }
 }
-/*package com.choga3gan.delivery.order.domain;
-
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
-
-import java.util.Objects;
-
-@Converter
-public class PriceConverter implements AttributeConverter<Price, Integer> {
-    @Override
-    public Integer convertToDatabaseColumn(Price price) {
-        return price == null ? 0 : price.getValue();
-    }
-
-    @Override
-    public Price convertToEntityAttribute(Integer value) {
-        return new Price(Objects.requireNonNullElse(value, 0));
-    }
-}*/

@@ -21,7 +21,6 @@ import com.choga3gan.delivery.global.domain.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @ToString
@@ -45,12 +44,13 @@ public class User extends Auditable {
     private String password;
 
     @Column(name="is_public")
-    private Boolean publicInfo;
+    private Boolean publicInfo = true;
 
     private String refreshToken;
 
-    @ToString.Exclude //  테스트용으로 잠깐 배제
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ToString.Exclude //  무한루프 배제
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @Builder
@@ -73,19 +73,27 @@ public class User extends Auditable {
         this.refreshToken = null;
     }
 
-    public void changeRoles(List<Role> roles) {
-
-    }
-
+    // 역할 변경 메서드
     public void changeRoles(Role role) {
-
+        this.role = role;
     }
 
-/*    private UUID roleId;
+    //사용자 역할 확인 메서드
+    public boolean hasRole(String role) {
+        return this.role != null && this.role.getRoleName().equals(role);
+    }
 
-    private String accessToken;
-
-    private String refreshToken;*/
-
+    //사용자 수정 메서드
+    public void updateUser(String email, String password, Boolean publicInfo) {
+        if(email != null && !email.isBlank()){
+            this.email = email;
+        }
+        if(password != null && !password.isBlank()){
+            this.password = password;
+        }
+        if(publicInfo != null){
+            this.publicInfo = publicInfo;
+        }
+    }
 
 }
