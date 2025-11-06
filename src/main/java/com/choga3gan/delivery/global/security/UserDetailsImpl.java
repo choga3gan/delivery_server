@@ -26,6 +26,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @ToString
@@ -50,16 +51,18 @@ public class UserDetailsImpl implements UserDetails {
 
     /**
      * 현 사용자가 가진 권한을 GrantedAuthority 형식으로 반환
-     * 현재 ROLE_USER 권한 자동 매핑,
-     * 추후 role.name() 등 메소드로 가져오기
+     *
+     * @PreAuthorize("hasRole('MASTER')")
+     * @PreAuthorize("hasAnyRole('MANAGER','MASTER')")
+     * 등을 메소드에 붙여 사용
+     *
      * @param  
      * @return 
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER")
-            //, new SimpleGrantedAuthority("ROLE_ADMIN") // 이런 방식으로 필요시 추가
-        );
+        if(user.getRole() == null) return Collections.emptyList();
+        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName()));
     }
 
     /**

@@ -18,6 +18,8 @@
 package com.choga3gan.delivery.product.controller;
 
 import com.choga3gan.delivery.product.domain.Product;
+import com.choga3gan.delivery.product.dto.DescriptionRequest;
+import com.choga3gan.delivery.product.dto.DescriptionResponse;
 import com.choga3gan.delivery.product.dto.ProductRequest;
 import com.choga3gan.delivery.product.dto.ProductResponse;
 import com.choga3gan.delivery.product.service.ProductService;
@@ -27,12 +29,11 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -40,7 +41,7 @@ import java.util.UUID;
 @Tag(name = "상품 API", description = "상품 등록, 조회, 수정, 삭제 기능을 위한 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/stores/{storeId}/products")
+@RequestMapping
 public class ProductController {
 
     private final ProductService productService;
@@ -64,7 +65,7 @@ public class ProductController {
             @ApiResponse(responseCode = "403", description = "권한 없음"),
             @ApiResponse(responseCode = "404", description = "매장을 찾을 수 없음")
     })
-    @PostMapping
+    @PostMapping("/v1/stores/{storeId}/products")
     public ResponseEntity<ProductResponse> createProduct(@PathVariable UUID storeId, @RequestBody ProductRequest productRequest) {
         Product product = productService.createProduct(storeId, productRequest);
         return ResponseEntity
@@ -90,7 +91,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
             @ApiResponse(responseCode = "404", description = "매장을 찾을 수 없음")
     })
-    @GetMapping
+    @GetMapping("/v1/stores/{storeId}/products")
     public ResponseEntity<Page<ProductResponse>> getAllProductsFromStore(@PathVariable UUID storeId) {
         Page<Product> productPage = productService.getProducts(storeId);
         return ResponseEntity
@@ -122,7 +123,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @GetMapping("/{productId}")
+    @GetMapping("/v1/stores/{storeId}/products/{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable UUID storeId, @PathVariable UUID productId) {
         Product product = productService.getProduct(storeId, productId);
         return ResponseEntity
@@ -174,13 +175,40 @@ public class ProductController {
             @ApiResponse(responseCode = "403", description = "권한 없음"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @PatchMapping("/{productId}")
+    @PatchMapping("/v1/stores/{storeId}/products/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable UUID storeId, @PathVariable UUID productId,
                                                          @RequestBody ProductRequest productRequest) {
         Product product = productService.updateProduct(storeId, productId, productRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ProductResponse.from(product));
+    }
+
+    @Operation(
+        summary = "상품 소개 문구 AI를 통해 추천",
+        description = """
+            입력한 요청에 따른 상품의 소개 문구를 AI를 통해 추천합니다. <br>
+            요청에는 반드시 해당 상품에 대한 설명이 포함되어 있어야 합니다.
+            """
+    )
+    @Parameters({
+        @Parameter(
+            name = "productId",
+            description = "소개 문구를 추가할 상품의 ID",
+            example = "123550e8400-e29b-41d4-a716-446655440000",
+            required = true
+        )
+    })
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "소개 문구 생성 완료")
+    })
+    @PostMapping("/v1/products/{productId}/descriptions")
+    public ResponseEntity<DescriptionResponse> getDescription(@PathVariable UUID productId,
+                                                              @Valid @RequestBody DescriptionRequest descriptionRequest) {
+        String response = productService.addDescriptionFromAI(productId, descriptionRequest);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new DescriptionResponse(response));
     }
 
     @Operation(
@@ -208,7 +236,7 @@ public class ProductController {
             @ApiResponse(responseCode = "403", description = "권한 없음"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/v1/stores/{storeId}/products/{productId}")
     public ResponseEntity<ProductResponse> removeProduct(@PathVariable UUID storeId, @PathVariable UUID productId) {
         productService.removeProduct(storeId, productId);
         return ResponseEntity

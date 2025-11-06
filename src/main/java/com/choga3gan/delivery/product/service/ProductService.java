@@ -21,7 +21,6 @@ import com.choga3gan.delivery.product.domain.Product;
 import com.choga3gan.delivery.product.dto.DescriptionRequest;
 import com.choga3gan.delivery.product.dto.ProductRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.UUID;
 

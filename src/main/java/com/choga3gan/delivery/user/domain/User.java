@@ -21,7 +21,6 @@ import com.choga3gan.delivery.global.domain.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @ToString
@@ -73,12 +72,16 @@ public class User extends Auditable {
         this.refreshToken = null;
     }
 
-    public void changeRoles(List<Role> roles) {
-
-    }
-
+    // 역할 변경 메서드
     public void changeRoles(Role role) {
+        if (this.role == null) {
+            this.role.getUsers().remove(this);
+        }
+        this.role = role;
 
+        if(role != null && !role.getUsers().contains(this)) {
+            role.getUsers().add(this);
+        }
     }
 
 /*    private UUID roleId;

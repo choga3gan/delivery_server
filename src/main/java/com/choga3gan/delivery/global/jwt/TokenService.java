@@ -80,6 +80,7 @@ public class TokenService {
         //엑세스 토큰 생성
         String accessToken = Jwts.builder()
                 .setSubject(username) // 식별자
+                .claim("role", user.getRole().getRoleName())
                 .setIssuedAt(now)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(accessExpire)
@@ -88,6 +89,7 @@ public class TokenService {
         //리프레시 토큰 생성
         String refreshToken = Jwts.builder()
                 .setSubject(username) // 식별자
+                .claim("role", user.getRole().getRoleName())
                 .setIssuedAt(now)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(refreshExpire)
@@ -133,7 +135,8 @@ public class TokenService {
         Date accessExpire = new Date(now.getTime() + properties.getValidTime() * 1000L);
 
         String accessToken = Jwts.builder()
-                .setSubject(username)
+                .setSubject(username) // 식별자
+                .claim("role", user.getRole().getRoleName())
                 .setIssuedAt(now)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(accessExpire)

@@ -32,7 +32,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Schema(description = "Product 생성/수정을 위한 요청 DTO")
 public class ProductRequest {
-    @Schema(description = "상품의 카테고리 분류 선택 리스트", example = "[550e8400-e29b-41d4-a716-446655440000]")
+    @Schema(description = "상품의 카테고리 분류 선택 리스트")
     private List<UUID> categoryIds; // 카테고리 ID 리스트
 
     @Schema(description = "상품 이름", example = "떡볶이")

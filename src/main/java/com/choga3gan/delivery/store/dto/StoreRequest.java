@@ -41,7 +41,7 @@ public class StoreRequest {
     @Schema(description = "매장 연락처", example = "01012345678")
     private String telNum;
 
-    @Schema(description = "매장의 카테고리 분류 선택 리스트", example = "[550e8400-e29b-41d4-a716-446655440000]")
+    @Schema(description = "매장의 카테고리 분류 선택 리스트")
     private List<UUID> categoryIds; // 카테고리 ID 리스트
 
     @Schema(description = "운영 시간 DTO")
