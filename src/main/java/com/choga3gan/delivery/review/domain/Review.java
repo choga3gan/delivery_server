@@ -22,6 +22,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Table(name = "p_review")
 @Getter
 @NoArgsConstructor
+@SQLRestriction("deleted_at IS NULL")
 public class Review extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -57,10 +59,20 @@ public class Review extends Auditable {
         this.rating = rating;
     }
 
+    /**
+     * 리뷰 본문 내용 변경
+     *
+     * @param content
+     */
     public void changeContent(String content) {
         this.content = content;
     }
 
+    /**
+     * 리뷰 평점 수정
+     *
+     * @param  rating
+     */
     public void changeRating(double rating) {
         this.rating = rating;
     }

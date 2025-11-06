@@ -40,7 +40,7 @@ import java.util.UUID;
 @Tag(name = "상품 API", description = "상품 등록, 조회, 수정, 삭제 기능을 위한 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/stores/{storeId}/products")
+@RequestMapping
 public class ProductController {
 
     private final ProductService productService;
@@ -64,7 +64,7 @@ public class ProductController {
             @ApiResponse(responseCode = "403", description = "권한 없음"),
             @ApiResponse(responseCode = "404", description = "매장을 찾을 수 없음")
     })
-    @PostMapping
+    @PostMapping("/v1/stores/{storeId}/products")
     public ResponseEntity<ProductResponse> createProduct(@PathVariable UUID storeId, @RequestBody ProductRequest productRequest) {
         Product product = productService.createProduct(storeId, productRequest);
         return ResponseEntity
@@ -90,7 +90,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
             @ApiResponse(responseCode = "404", description = "매장을 찾을 수 없음")
     })
-    @GetMapping
+    @GetMapping("/v1/stores/{storeId}/products")
     public ResponseEntity<Page<ProductResponse>> getAllProductsFromStore(@PathVariable UUID storeId) {
         Page<Product> productPage = productService.getProducts(storeId);
         return ResponseEntity
@@ -122,7 +122,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "상품 조회 성공"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @GetMapping("/{productId}")
+    @GetMapping("/v1/stores/{storeId}/products/{productId}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable UUID storeId, @PathVariable UUID productId) {
         Product product = productService.getProduct(storeId, productId);
         return ResponseEntity
@@ -174,7 +174,7 @@ public class ProductController {
             @ApiResponse(responseCode = "403", description = "권한 없음"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @PatchMapping("/{productId}")
+    @PatchMapping("/v1/stores/{storeId}/products/{productId}")
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable UUID storeId, @PathVariable UUID productId,
                                                          @RequestBody ProductRequest productRequest) {
         Product product = productService.updateProduct(storeId, productId, productRequest);
@@ -208,7 +208,7 @@ public class ProductController {
             @ApiResponse(responseCode = "403", description = "권한 없음"),
             @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/v1/stores/{storeId}/products/{productId}")
     public ResponseEntity<ProductResponse> removeProduct(@PathVariable UUID storeId, @PathVariable UUID productId) {
         productService.removeProduct(storeId, productId);
         return ResponseEntity

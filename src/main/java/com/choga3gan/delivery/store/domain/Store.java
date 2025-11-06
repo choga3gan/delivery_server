@@ -162,10 +162,35 @@ public class Store extends Auditable {
      * @param rating
      */
     public void updateRatingAvg(double rating) {
-        this.ratingAvg = (ratingAvg * reviewCount + rating) / (reviewCount + 1);
         this.reviewCount += 1;
+        this.ratingAvg = (ratingAvg * reviewCount + rating) / reviewCount;
+
     }
 
+    /**
+     * 리뷰 평점 수정 시 매장 평점 평균 수정
+     *
+     * @param  oldRating, newRating
+     */
+    public void updateRatingAvg(double oldRating, double newRating) {
+        this.ratingAvg = (ratingAvg * reviewCount - oldRating + newRating) / reviewCount;
+    }
+
+    /**
+     * 리뷰 삭제 시 매장 평점 평균 및 리뷰 개수 수정
+     *
+     * @param  rating
+     */
+    public void deleteReviews(double rating) {
+        this.reviewCount -= 1;
+        this.ratingAvg = (ratingAvg * reviewCount - rating) / (reviewCount);
+    }
+
+    /**
+     * 매장 주소 수정
+     *
+     * @param  address
+     */
     public void changeAddress(String address) {
         this.address = address;
     }
