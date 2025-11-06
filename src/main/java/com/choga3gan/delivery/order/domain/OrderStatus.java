@@ -22,10 +22,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum OrderStatus {
-    // 주문 접수 이전/결제 대기
-    ORDER_PENDING("결제 대기"),
     // 주문 접수 완료 (입금 확인 후)
     ORDER_ACCEPT("주문 접수"),
+    CONFIRM_PAYMENT("입금 확인"),
     // 배송 시작
     IN_DELIVERY("배송 중"),
     // 배송 완료

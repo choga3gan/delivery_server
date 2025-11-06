@@ -18,6 +18,9 @@ package com.choga3gan.delivery.order.domain;
 
 
 import com.choga3gan.delivery.global.domain.Auditable;
+import com.choga3gan.delivery.global.event.Events;
+import com.choga3gan.delivery.order.event.OrderAcceptEvent;
+import com.choga3gan.delivery.order.event.OrderRefundEvent;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -82,38 +85,43 @@ public class Order extends Auditable {
         this.orderItems = orderItems; // 필드에 값 대입 추가
     }
 
-    // 주문 상태 변경 메서드
-    public void changeStatus(OrderStatus status) {
-        this.orderStatus = status;
-    }
 
-    // 주문 취소/환불 요청 로직
-    public void cancel() {
-        this.orderStatus = orderStatus.ORDER_CANCEL;
-    }
-
-    /*private void setOrderItems(List<OrderItem> orderItems) {
+    private void setOrderItems(List<OrderItem> orderItems) {
         if(orderItems == null || orderItems.isEmpty()) {
-            return null;
+            return;
         }
 
         this.orderItems = orderItems;
-    }*/
+    }
 
-   /* private void calculateTotalPrice() {
+    private void calculateTotalPrice() {
         this.totalPrice = new Price(orderItems.stream().mapToInt(x -> x.getTotalPrice().getValue()).sum());
-    }*/
+    }
 
     //주문 접수
-   /*public void orderAccept() {
+   public void orderAccept() {
         this.orderStatus = OrderStatus.ORDER_ACCEPT;
 
-        //결제 요청 이벤트 발생 시키기
-        Events.trigger(new OrderExceptEvent(id));
-    }*/
+        //주문 접수 후 이벤트 발생 시키기
+        Events.trigger(new OrderAcceptEvent(orderId));
+    }
+
+    // 배송 상태로 변경
+    public void delivery() {
+        if (orderStatus != OrderStatus.ORDER_ACCEPT) return;
+
+        this.orderStatus = OrderStatus.IN_DELIVERY;
+    }
+
+    // 배송 완료
+    public void complete() {
+        if (orderStatus != OrderStatus.IN_DELIVERY) return;
+
+        this.orderStatus = OrderStatus.DELIVERY_COMPLETED;
+    }
 
     //주문 취소
-    /*public void cancel() {
+    public void cancel() {
         //입금 확인 전이면 주문 취소, 입금 후 주문 접수 후 5분 이내인 상태라면 환불
         if (this.orderStatus == OrderStatus.ORDER_ACCEPT) {
             this.orderStatus = OrderStatus.ORDER_CANCEL;
@@ -121,7 +129,7 @@ public class Order extends Auditable {
             this.orderStatus = OrderStatus.ORDER_REFUND;
 
             //결제 취소 요청
-            //Events.trigger(new OrderRefundEvent(id));
+            Events.trigger(new OrderRefundEvent(orderId));
         }
-    }*/
+    }
 }
