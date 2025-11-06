@@ -18,8 +18,6 @@ package com.choga3gan.delivery.product.dto;
 
 import com.choga3gan.delivery.category.dto.CategoryResponse;
 import com.choga3gan.delivery.product.domain.Product;
-import com.choga3gan.delivery.store.domain.Store;
-import com.choga3gan.delivery.store.dto.StoreResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -79,7 +77,7 @@ public class ProductResponse {
                                 .collect(Collectors.toList())
                         : Collections.emptyList())
                 .productName(product.getProductName())
-                .price(product.getPrice())
+                .price((double)product.getPrice())
                 .open(product.isOpen())
                 .productImg(product.getProductImg())
                 .description(product.getDescription())
