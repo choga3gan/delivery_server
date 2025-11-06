@@ -29,5 +29,5 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
     List<Category> findAll();
     boolean existsByCategoryNameAndDeletedAtIsNull(String categoryName);
 
-    List<Category> findAllByCategoryIdIn(List<UUID> categoryId); // TODO : Order By로 정렬
+    List<Category> findAllByCategoryIdIn(List<UUID> categoryId);
 }
