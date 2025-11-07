@@ -1,5 +1,6 @@
 package com.choga3gan.delivery.user.service;
 
+import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import com.choga3gan.delivery.user.domain.Role;
 import com.choga3gan.delivery.user.dto.RoleDto;
 import com.choga3gan.delivery.user.exception.DuplicatedRoleException;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class RoleService {
 
     private final RoleRepository roleRepository;
+    private final SecurityUtilService securityUtil;
 
     /**
      * 역할 전체 조회
@@ -70,6 +72,6 @@ public class RoleService {
      */
      public void deleteRole(UUID roleId) {
          Role role = roleRepository.findById(roleId).orElseThrow(RoleNotFoundException::new);
-         role.softDelete("delete_tester01");
+         role.softDelete(securityUtil.getCurrentUsername());
      }
 }

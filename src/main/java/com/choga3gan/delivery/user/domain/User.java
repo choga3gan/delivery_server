@@ -20,6 +20,7 @@ package com.choga3gan.delivery.user.domain;
 import com.choga3gan.delivery.global.domain.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Objects;
 
@@ -29,6 +30,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Access(AccessType.FIELD)
+@SQLRestriction("deleted_at IS NULL")
 public class User extends Auditable {
 
     @EmbeddedId
