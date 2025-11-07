@@ -3,6 +3,8 @@ package com.choga3gan.delivery.payment.service;
 import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import com.choga3gan.delivery.order.domain.Order;
 import com.choga3gan.delivery.order.domain.OrderItem;
+import com.choga3gan.delivery.order.repository.OrderRepository;
+import com.choga3gan.delivery.order.service.OrderNotFoundException;
 import com.choga3gan.delivery.payment.domain.Payment;
 import com.choga3gan.delivery.payment.exception.PaymentNotCancelException;
 import com.choga3gan.delivery.payment.exception.PaymentNotFoundException;
@@ -11,13 +13,13 @@ import com.choga3gan.delivery.store.service.CheckStoreAccess;
 import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.exception.UserNotFoundException;
 import com.choga3gan.delivery.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -27,11 +29,14 @@ import java.util.UUID;
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
     private final SecurityUtilService securityUtilService;
     private final UserRepository userRepository;
 
     @Override
-    public Payment createPayment(Order order) {
+    public Payment createPayment(UUID orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+
         int quantity = order.getOrderItems().stream().mapToInt(OrderItem::getQuantity).sum();
 
         Payment payment = Payment.builder()

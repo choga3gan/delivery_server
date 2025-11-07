@@ -1,13 +1,14 @@
 package com.choga3gan.delivery.order.event;
 
-import com.choga3gan.delivery.order.domain.Order;
 import lombok.Getter;
+
+import java.util.UUID;
 
 @Getter
 public class PaymentRequestEvent {
-    private Order order;
+    private final UUID orderId;
 
-    public PaymentRequestEvent(Order order) {
-        this.order = order;
+    public PaymentRequestEvent(UUID orderId) {
+        this.orderId = orderId;
     }
 }

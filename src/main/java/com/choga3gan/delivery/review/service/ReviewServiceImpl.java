@@ -17,6 +17,7 @@
 
 package com.choga3gan.delivery.review.service;
 
+import com.choga3gan.delivery.global.event.Events;
 import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import com.choga3gan.delivery.order.domain.Order;
 import com.choga3gan.delivery.order.domain.OrderStatus;
@@ -39,7 +40,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -80,7 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
 
         orders.getFirst().changeReviewed(true);
-        publisher.publishEvent(new ReviewCreatedEvent(review.getStoreId(), review.getRating()));
+        Events.trigger(new ReviewCreatedEvent(review.getStoreId(), review.getRating()));
         return reviewRepository.save(review);
     }
 
@@ -137,8 +137,7 @@ public class ReviewServiceImpl implements ReviewService {
         // null이 아닌 필드만 수정
         if (reviewRequest.getRating() != null) {
             review.changeRating(reviewRequest.getRating());
-            publisher.publishEvent(
-                    new ReviewUpdatedEvent(review.getStoreId(), review.getRating(), reviewRequest.getRating()));
+            Events.trigger(new ReviewUpdatedEvent(review.getStoreId(), review.getRating(), reviewRequest.getRating()));
         }
         if (reviewRequest.getContent() != null) {
             review.changeContent(reviewRequest.getContent());
@@ -157,7 +156,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewRepository.findById(reviewId).orElseThrow(ReviewNotFoundException::new);
         if  (review.getUserId().equals(userId)) {
             review.softDelete(securityUtil.getCurrentUsername());
-            publisher.publishEvent(new ReviewDeletedEvent(review.getStoreId(), review.getRating()));
+            Events.trigger(new ReviewDeletedEvent(review.getStoreId(), review.getRating()));
         } else {
             throw new ReviewNotEditableException();
         }
