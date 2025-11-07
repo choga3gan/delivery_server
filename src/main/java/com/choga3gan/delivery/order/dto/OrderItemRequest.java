@@ -1,8 +1,10 @@
 package com.choga3gan.delivery.order.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.UUID;
 
 public record OrderItemRequest(
-        UUID productId,
-        int quantity
+        @Schema(description = "매장 Id", example = "550e8400-e29b-41d4-a716-446655440002") UUID productId,
+        @Schema(description = "매장 Id", example = "3") int quantity
 ) {}

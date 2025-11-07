@@ -172,6 +172,7 @@ public class StoreServiceImpl implements StoreService {
         } else  {
             store.open();
         }
+        storeRepository.save(store);
     }
 
     /**

@@ -24,6 +24,7 @@ import com.choga3gan.delivery.user.service.UserService;
 import com.choga3gan.delivery.user.validator.SignupValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,6 +63,7 @@ public class UserController {
         userService.SignUp(req);
     }
 
+
     @Operation(summary = "로그인",
                description = """
                 로그인 입니다.
@@ -73,6 +74,7 @@ public class UserController {
         LoginResponse response = userService.login(req);
         return ResponseEntity.ok(response);
     }
+
 
     @Operation(summary = "토큰 재발급",
                description = """
@@ -85,19 +87,21 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
     @Operation(summary = "로그아웃",
                description = """
                 로그아웃입니다.
+                리프레시 토큰의 삭제로 구현합니다.
                 """
     )
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
             @RequestHeader("Authorization") String authorizationHeader,
             @Valid @RequestBody LogoutRequest request) {
-
         userService.logout(authorizationHeader, request.getRefreshToken());
         return  ResponseEntity.ok().build();
     }
+
 
     @Operation(summary = "사용자 역할 변경",
                description = """
@@ -114,6 +118,7 @@ public class UserController {
     @Operation(summary = "사용자 목록 조회",
                description = """
                 사용자 목록을 조회합니다.
+                MASTER 권한의 사용자만 조회가 가능합니다.
                 """
     )
     @PreAuthorize("hasRole('MASTER')")
@@ -124,9 +129,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+
     @Operation(summary = "사용자 상세 조회",
                description = """
-                사용자 상세 조회 입니다.
+                사용자 상세 조회입니다.
+                MASTER 권한의 사용자만 조회가 가능합니다.
                 """
     )
     @GetMapping("/{userId}")
@@ -137,9 +144,11 @@ public class UserController {
         return ResponseEntity.ok(res);
     }
 
-    @Operation(summary = "사용자등록",
+
+    @Operation(summary = "사용자 등록",
                description = """
-                마스터 권한 유저가 사용하는 사용자 등록입니다.
+                사용자 등록입니다.
+                MASTER 권한의 사용자만 등록이 가능합니다.
                 """
     )
     @PostMapping
@@ -149,11 +158,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 사용자 수정
-     * @param
-     * @return
-     */
+
+    @Operation(summary = "사용자 수정",
+               description = """
+                사용자 수정입니다.
+                MASTER 권한의 사용자만 수정이 가능합니다.
+                """
+    )
     @PatchMapping("{userId}")
     @PreAuthorize("hasRole('MASTER')")
     public ResponseEntity<UserResponse> patchUser(@PathVariable UUID userId,
@@ -163,11 +174,12 @@ public class UserController {
     }
 
 
-    /**
-     * 사용자 삭제
-     * @param
-     * @return
-     */
+    @Operation(summary = "사용자 삭제",
+               description = """
+                사용자 삭제입니다.
+                MASTER 권한의 사용자만 삭제가 가능합니다.
+                """
+    )
     @DeleteMapping("/{userId}")
     @Transactional
     @PreAuthorize("hasRole('MASTER')")
@@ -176,26 +188,17 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 로그인한 사용자 프로필 조회
-     * @param  
-     * @return 
-     */
+
+    @Operation(summary = "본인 프로필 조회",
+               description = """
+                로그인한 사용자 본인의 상세 정보를 조회합니다.
+                """
+    )
     @GetMapping("/profile")
+    @Transactional
     public ResponseEntity<UserResponse> getUserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserResponse res = userService.getUsersDetail(userDetails.getUser().getId().getId());
 
         return ResponseEntity.ok(res);
     }
-    //테스트용
-//    @GetMapping("profile")
-//    public void profile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        log.info("UserDetails: {}",userDetails);
-//    }
-//
-//    @PreAuthorize("hasAnyRole('MANAGER','MASTER')")
-//    @GetMapping("profile/{username}")
-//    public void viewProfile(@PathVariable("username") String username) {
-//        log.info("UserDetails: {}",username);
-//    }
 }
