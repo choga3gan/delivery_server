@@ -4,6 +4,7 @@ import com.choga3gan.delivery.order.domain.Order;
 import com.choga3gan.delivery.order.repository.OrderRepository;
 import com.choga3gan.delivery.order.service.OrderNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -13,13 +14,14 @@ import org.springframework.stereotype.Service;
 public class OrderEventHandler {
 
     private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher publisher;
 
     @Async
     @EventListener
     public void handleOrderAcceptEvent(OrderAcceptEvent orderAcceptEvent) {
         Order order = orderRepository.findByOrderId(orderAcceptEvent.orderId())
                 .orElseThrow(OrderNotFoundException::new);
-        order.orderAccept();
+        publisher.publishEvent(PaymentRequestEvent.class);
         orderRepository.save(order);
     }
 
@@ -28,7 +30,7 @@ public class OrderEventHandler {
     public void handleOrderRefundEvent(OrderRefundEvent orderRefundEvent) {
         Order order = orderRepository.findByOrderId(orderRefundEvent.orderId())
                 .orElseThrow(OrderNotFoundException::new);
-        order.cancel();
+        publisher.publishEvent(PaymentCancelEvent.class);
         orderRepository.save(order);
     }
 }
