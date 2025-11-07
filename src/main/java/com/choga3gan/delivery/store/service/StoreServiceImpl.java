@@ -188,7 +188,7 @@ public class StoreServiceImpl implements StoreService {
                 .map(dto -> new Staff(UserId.of(dto.getId())))
                 .toList();
         store.addStaff(staffEntities);
-        staffs.forEach(staff -> {
+        staffEntities.forEach(staff -> {
             User user = userRepository.findById(staff.getId()).orElseThrow(UserNotFoundException::new);
             userService.changeUserRole(user.getUsername(), "ROLE_STAFF");
         });
@@ -209,7 +209,7 @@ public class StoreServiceImpl implements StoreService {
                 .map(dto -> new Staff(UserId.of(dto.getId())))
                 .toList();
         store.removeStaff(staffEntities);
-        staffs.forEach(staff -> {
+        staffEntities.forEach(staff -> {
             User user = userRepository.findById(staff.getId()).orElseThrow(UserNotFoundException::new);
             userService.changeUserRole(user.getUsername(), "ROLE_CUSTOMER");
         });
