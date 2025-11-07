@@ -19,19 +19,32 @@ public class StoreAccessAspect {
     @Before("@annotation(checkStoreAccess)")
     public void checkStoreAccess(JoinPoint joinPoint, CheckStoreAccess checkStoreAccess) {
         String paramName = checkStoreAccess.value();
-        UUID storeId = UUID.fromString(paramName);
+        UUID storeId = getStoreIdFromArgs(joinPoint, paramName);
 
         storeAuthorizationService.validateStoreAccess(storeId);
     }
 
-    private Long getStoreIdFromArgs(JoinPoint joinPoint, String paramName) {
+    private UUID getStoreIdFromArgs(JoinPoint joinPoint, String paramName) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         String[] paramNames = signature.getParameterNames();
         Object[] args = joinPoint.getArgs();
 
         for (int i = 0; i < paramNames.length; i++) {
-            if (paramNames[i].equals(paramName) && args[i] instanceof Long id) {
-                return id;
+            if (paramNames[i].equals(paramName)) {
+                if (args[i] instanceof UUID id) {
+                    return id;
+                }
+                // 인자가 String 타입이라면 UUID로 변환 시도 (경로 변수 등으로 들어왔을 경우)
+                else if (args[i] instanceof String idString) {
+                    try {
+                        return UUID.fromString(idString);
+                    } catch (IllegalArgumentException e) {
+                        // UUID 변환에 실패한 경우
+                        throw new IllegalArgumentException(
+                                "'" + paramName + "' 파라미터는 유효한 UUID 형식이 아닙니다: " + idString, e
+                        );
+                    }
+                }
             }
         }
 
