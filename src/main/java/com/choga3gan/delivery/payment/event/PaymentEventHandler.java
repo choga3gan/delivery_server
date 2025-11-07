@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Service
@@ -18,14 +19,14 @@ public class PaymentEventHandler {
     private final PaymentService paymentService;
 
     @Async
-    @EventListener
+    @TransactionalEventListener(PaymentRequestEvent.class)
     public void handlePaymentRequestEvent(PaymentRequestEvent paymentRequestEvent) {
         paymentService.createPayment(paymentRequestEvent.getOrder());
         log.trace("Payment has been created");
     }
 
     @Async
-    @EventListener
+    @TransactionalEventListener(PaymentCancelEvent.class)
     public void handlePaymentCancelEvent(PaymentCancelEvent paymentCancelEvent) {
         paymentService.cancelPayment(paymentCancelEvent.getOrderId());
         log.trace("Payment has been cancelled");

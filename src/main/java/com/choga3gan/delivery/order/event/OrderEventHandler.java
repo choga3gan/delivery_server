@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Service
@@ -19,7 +20,7 @@ public class OrderEventHandler {
     private final ApplicationEventPublisher publisher;
 
     @Async
-    @EventListener
+    @TransactionalEventListener(OrderAcceptEvent.class)
     public void handleOrderAcceptEvent(OrderAcceptEvent orderAcceptEvent) {
         Order order = orderRepository.findByOrderId(orderAcceptEvent.orderId())
                 .orElseThrow(OrderNotFoundException::new);
@@ -29,7 +30,7 @@ public class OrderEventHandler {
     }
 
     @Async
-    @EventListener
+    @TransactionalEventListener(OrderRefundEvent.class)
     public void handleOrderRefundEvent(OrderRefundEvent orderRefundEvent) {
         Order order = orderRepository.findByOrderId(orderRefundEvent.orderId())
                 .orElseThrow(OrderNotFoundException::new);

@@ -24,10 +24,12 @@ import com.choga3gan.delivery.order.event.OrderRefundEvent;
 import com.choga3gan.delivery.order.event.PaymentCancelEvent;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @ToString
 @Entity
 @Table(name = "p_order")
