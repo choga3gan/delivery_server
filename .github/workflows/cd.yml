@@ -72,5 +72,5 @@ jobs:
             -e DB_DDL_AUTO=update \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             -e JWT_VALID_TIME=${{ secrets.JWT_VALID_TIME }} \
-            -e GEMINI_API_KEY==${{ secrets.GEMINI_API_KEY }} \
+            -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
             ${{ env.IMAGE_URI }}
