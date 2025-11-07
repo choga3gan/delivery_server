@@ -115,7 +115,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("review-api")
                 .displayName("리뷰 API")
-                .pathsToMatch("/v1/review/**")
+                .pathsToMatch("/v1/reviews/**")
                 .build();
     }
 
