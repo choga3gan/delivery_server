@@ -109,7 +109,7 @@ public class OrderController {
             """
     )
     @GetMapping("/{storeId}")
-    @PreAuthorize("hasAnyRole('MASTER', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('MASTER', 'MANAGER', 'OWNER')")
     public List<OrderDto> orderAdminList(@PathVariable("storeId") UUID storeId) {
         return detailsService.findAllByStoreId(storeId);
     }
