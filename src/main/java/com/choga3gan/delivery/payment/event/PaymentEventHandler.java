@@ -5,10 +5,12 @@ import com.choga3gan.delivery.order.event.PaymentRequestEvent;
 import com.choga3gan.delivery.payment.domain.Payment;
 import com.choga3gan.delivery.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentEventHandler {
@@ -19,11 +21,13 @@ public class PaymentEventHandler {
     @EventListener
     public void handlePaymentRequestEvent(PaymentRequestEvent paymentRequestEvent) {
         paymentService.createPayment(paymentRequestEvent.getOrder());
+        log.trace("Payment has been created");
     }
 
     @Async
     @EventListener
     public void handlePaymentCancelEvent(PaymentCancelEvent paymentCancelEvent) {
         paymentService.cancelPayment(paymentCancelEvent.getOrderId());
+        log.trace("Payment has been cancelled");
     }
 }
