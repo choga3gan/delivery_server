@@ -22,8 +22,6 @@ import com.choga3gan.delivery.user.service.RoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,25 +59,17 @@ public class RoleController {
         summary = "역할 단건 조회",
         description = """
             단건 역할을 조회합니다.
+            MASTER 권한의 사용자만 조회 가능합니다.
             """
     )
     @Parameters({
         @Parameter(
             name = "roleId",
-            description = "조회할 역할 ID",
-            example = "123550e8400-e29b-41d4-a716-446655440000",
+            description = "사용자",
+            example = "b56bd4ff-fcbd-4f3e-8f02-ed88f6647747",
             required = true
         )
     })
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "정상 조회"),
-        @ApiResponse(responseCode = "404", description = "역할을 찾을 수 없음")
-    })
-    /**
-     * 역할 단건 조회
-     * @param @PathVariable (URL 경로에 있는 값을 파라미터로 받아옴) roleId
-     * @return
-     */
     @GetMapping("/{roleId}")
     @PreAuthorize("hasRole('MASTER')")
     public ResponseEntity<Role> getRole(@PathVariable UUID roleId) {
@@ -92,17 +82,10 @@ public class RoleController {
         summary = "역할 생성",
         description = """
             신규 역할을 생성합니다.
+            MASTER 권한의 사용자만 역할 생성이 가능합니다.
             """
     )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "역할 정상 생성"),
-        @ApiResponse(responseCode = "404", description = "역할을 생성할 수 없음")
-    })
-    /**
-     * 역할 생성
-     * @param
-     * @return
-     */
+    @PreAuthorize("hasRole('MASTER')")
     @PostMapping
     public ResponseEntity<Role> createRole(@RequestBody RoleDto roleDto) {
         Role createRole = roleService.createRole(roleDto);
@@ -111,20 +94,12 @@ public class RoleController {
 
 
     @Operation(
-        summary = "역할 전체 수정",
+        summary = "역할 수정",
         description = """
             주어진 userId에 해당하는 역할을 수정합니다.
+            MASTER 권한의 사용자만 역할 수정이 가능합니다.
             """
     )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "역할 정상 수정"),
-        @ApiResponse(responseCode = "404", description = "역할을 수정할 수 없음")
-    })
-    /**
-     * 역할 전체 수정
-     * @param
-     * @return
-     */
     @PutMapping("/{roleId}")
     @PreAuthorize("hasRole('MASTER')")
     public ResponseEntity<Role> updateRole(@PathVariable UUID roleId, @RequestBody RoleDto roleDto) {
@@ -136,17 +111,9 @@ public class RoleController {
         summary = "역할 삭제",
         description = """
             주어진 roleId 에 대한 역할을 삭제합니다.
+            MASTER 권한의 사용자만 역할 삭제가 가능합니다.
             """
     )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "역할 정상 삭제"),
-        @ApiResponse(responseCode = "404", description = "역할을 삭제할 수 없음")
-    })
-    /**
-     * 역할 삭제
-     * @param
-     * @return
-     */
     @DeleteMapping("/{roleId}")
     @PreAuthorize("hasRole('MASTER')")
     public ResponseEntity<Void> deleteRole(@PathVariable UUID roleId) {

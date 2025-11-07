@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @Schema(description = "역할 생성 및 수정 요청 DTO")
 public class RoleDto {
 
-    @Schema(description = "등록할 역할 이름", example = "ROLE_USER")
+    @Schema(description = "역할 이름", example = "ROLE_USER")
     @NotBlank
     private String roleName;
 
+    @Schema(description = "역할 설명", example = "기본 사용자")
     private String roleDescription;
 
     @Builder
