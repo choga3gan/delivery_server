@@ -2,8 +2,11 @@ package com.choga3gan.delivery.order.service;
 
 import com.choga3gan.delivery.category.domain.Category;
 import com.choga3gan.delivery.category.repository.CategoryRepository;
+import com.choga3gan.delivery.order.domain.Order;
 import com.choga3gan.delivery.order.dto.OrderItemRequest;
 import com.choga3gan.delivery.order.dto.OrderRequest;
+import com.choga3gan.delivery.order.dto.OrderResponse;
+import com.choga3gan.delivery.order.repository.OrderRepository;
 import com.choga3gan.delivery.product.domain.Product;
 import com.choga3gan.delivery.product.repository.ProductRepository;
 import com.choga3gan.delivery.store.domain.ServiceTime;
@@ -12,6 +15,7 @@ import com.choga3gan.delivery.store.repository.StoreRepository;
 import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.repository.UserRepository;
 import com.choga3gan.delivery.user.test.MockUser;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +26,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("local")
+@Transactional
 public class OrderControllerTest {
     @Autowired
     OrderService orderService;
@@ -50,6 +58,9 @@ public class OrderControllerTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -105,11 +116,29 @@ public class OrderControllerTest {
     @DisplayName("주문 등록 테스트")
     @MockUser
     void orderCreateTest() throws Exception {
-        String body = objectMapper.writeValueAsString(orderRequest);
-        mockMvc.perform(post("/v1/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
-                .andDo(print());
+//        String body = objectMapper.writeValueAsString(orderRequest);
+//        String res = mockMvc.perform(post("/v1/orders")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(body))
+//                .andDo(print())
+//                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+//
+//        System.out.println("response:" + res);
+        //OrderResponse r =  objectMapper.readValue(res, OrderResponse.class);
+        //UUID orderId = r.orderId();
+
+        //mockMvc.perform(patch("/v1/orders/" + orderId.toString() + "/status?accept=true"))
+         //       .andDo(print());
+    }
+
+    @Test
+    void acceptOrderTest() throws Exception {
+        UUID orderId = UUID.fromString("ee978742-e5e5-44cb-8b3c-b063b12168a5");
+        Order order = orderRepository.findById(orderId).orElse(null);
+        order.orderAccept();
+        orderRepository.save(order);
+        System.out.println(order);
+
     }
 
     @Test

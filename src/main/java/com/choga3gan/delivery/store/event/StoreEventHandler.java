@@ -41,7 +41,7 @@ public class StoreEventHandler {
      * @param  reviewCreatedEvent
      */
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(ReviewCreatedEvent.class)
     public void handlerReviewCreatedEvent(ReviewCreatedEvent reviewCreatedEvent) {
         Store store = storeRepository.findByStoreId(reviewCreatedEvent.getStoreId())
                 .orElseThrow(StoreNotFoundException::new);
@@ -55,7 +55,7 @@ public class StoreEventHandler {
      * @param  reviewUpdatedEvent
      */
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(ReviewUpdatedEvent.class)
     public void handlerReviewUpdatedEvent(ReviewUpdatedEvent reviewUpdatedEvent) {
         Store store = storeRepository.findByStoreId(reviewUpdatedEvent.getStoreId())
                 .orElseThrow(StoreNotFoundException::new);
@@ -69,7 +69,7 @@ public class StoreEventHandler {
      * @param  reviewDeletedEvent
      */
     @Async
-    @EventListener
+    @EventListener(ReviewDeletedEvent.class)
     public void handlerReviewDeletedEvent(ReviewDeletedEvent reviewDeletedEvent) {
         Store store = storeRepository.findByStoreId(reviewDeletedEvent.getStoreId())
                 .orElseThrow(StoreNotFoundException::new);
