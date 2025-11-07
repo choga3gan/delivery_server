@@ -71,7 +71,7 @@ public class RoleController {
         )
     })
     @GetMapping("/{roleId}")
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     public ResponseEntity<Role> getRole(@PathVariable UUID roleId) {
         Role role = roleService.getRole(roleId);
         return ResponseEntity.ok(role);
@@ -101,7 +101,7 @@ public class RoleController {
             """
     )
     @PutMapping("/{roleId}")
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     public ResponseEntity<Role> updateRole(@PathVariable UUID roleId, @RequestBody RoleDto roleDto) {
         Role updateRole = roleService.updateRole(roleId, roleDto);
         return ResponseEntity.status(HttpStatus.OK).body(updateRole);
@@ -115,7 +115,7 @@ public class RoleController {
             """
     )
     @DeleteMapping("/{roleId}")
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     public ResponseEntity<Void> deleteRole(@PathVariable UUID roleId) {
         roleService.deleteRole(roleId);
         return ResponseEntity.ok().build();

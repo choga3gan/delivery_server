@@ -37,7 +37,6 @@ public class OrderService {
      * @param req
      * @return
      */
-    @PreAuthorize("hasRole('USER')")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public UUID createOrder(UUID userId, OrderRequest req) {
 
