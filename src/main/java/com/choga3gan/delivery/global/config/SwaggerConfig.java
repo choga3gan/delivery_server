@@ -10,12 +10,41 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 // 스웨거 설정
 @Configuration
 public class SwaggerConfig {
 
     @Bean
+    @Profile("local")
+    public OpenAPI customLocalOpenAPI() {
+
+        // Security Scheme 정의
+        SecurityScheme securityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER)
+                .name("Authorization");
+
+        // Security Requirement 정의
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList("BearerAuth");
+
+
+        return new OpenAPI()
+                .info(new Info()
+                        .title("배달 서비스 REST API")
+                        .description("초가삼간 조 배달 서비스")
+                        .version("1.0.0")
+                        .contact(new Contact().email(""))
+                )
+                .addSecurityItem(securityRequirement)
+                .schemaRequirement("BearerAuth", securityScheme);
+    }
+
+    @Bean
+    @Profile("!local")
     public OpenAPI customOpenAPI() {
 
         // Security Scheme 정의

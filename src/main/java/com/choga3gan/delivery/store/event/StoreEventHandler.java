@@ -24,12 +24,12 @@ import com.choga3gan.delivery.store.domain.Store;
 import com.choga3gan.delivery.store.exception.StoreNotFoundException;
 import com.choga3gan.delivery.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StoreEventHandler {
@@ -41,12 +41,13 @@ public class StoreEventHandler {
      * @param  reviewCreatedEvent
      */
     @Async
-    @TransactionalEventListener(ReviewCreatedEvent.class)
+    @EventListener(ReviewCreatedEvent.class)
     public void handlerReviewCreatedEvent(ReviewCreatedEvent reviewCreatedEvent) {
         Store store = storeRepository.findByStoreId(reviewCreatedEvent.getStoreId())
                 .orElseThrow(StoreNotFoundException::new);
         store.updateRatingAvg(reviewCreatedEvent.getRating());
-        storeRepository.save(store);
+        storeRepository.saveAndFlush(store);
+        log.info("Review has been created");
     }
 
     /**
@@ -55,12 +56,13 @@ public class StoreEventHandler {
      * @param  reviewUpdatedEvent
      */
     @Async
-    @TransactionalEventListener(ReviewUpdatedEvent.class)
+    @EventListener(ReviewUpdatedEvent.class)
     public void handlerReviewUpdatedEvent(ReviewUpdatedEvent reviewUpdatedEvent) {
         Store store = storeRepository.findByStoreId(reviewUpdatedEvent.getStoreId())
                 .orElseThrow(StoreNotFoundException::new);
         store.updateRatingAvg(reviewUpdatedEvent.getOldRating(), reviewUpdatedEvent.getNewRating());
-        storeRepository.save(store);
+        storeRepository.saveAndFlush(store);
+        log.info("Review has been updated");
     }
 
     /**
@@ -74,6 +76,7 @@ public class StoreEventHandler {
         Store store = storeRepository.findByStoreId(reviewDeletedEvent.getStoreId())
                 .orElseThrow(StoreNotFoundException::new);
         store.deleteReviews(reviewDeletedEvent.getRating());
-        storeRepository.save(store);
+        storeRepository.saveAndFlush(store);
+        log.info("Review has been deleted");
     }
 }
