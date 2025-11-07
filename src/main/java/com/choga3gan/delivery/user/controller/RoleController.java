@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,7 +48,6 @@ public class RoleController {
         summary = "모든 역할 조회",
         description = """
             모든 역할을 조회합니다.
-            delete_at 소프트 딜리트 된 항목 제거 필요
             """
     )
     @GetMapping
@@ -61,7 +61,6 @@ public class RoleController {
         summary = "역할 단건 조회",
         description = """
             단건 역할을 조회합니다.
-            delete_at 소프트 딜리트 된 항목 제거 필요
             """
     )
     @Parameters({
@@ -82,6 +81,7 @@ public class RoleController {
      * @return
      */
     @GetMapping("/{roleId}")
+    @PreAuthorize("hasRole('MASTER')")
     public ResponseEntity<Role> getRole(@PathVariable UUID roleId) {
         Role role = roleService.getRole(roleId);
         return ResponseEntity.ok(role);
@@ -126,6 +126,7 @@ public class RoleController {
      * @return
      */
     @PutMapping("/{roleId}")
+    @PreAuthorize("hasRole('MASTER')")
     public ResponseEntity<Role> updateRole(@PathVariable UUID roleId, @RequestBody RoleDto roleDto) {
         Role updateRole = roleService.updateRole(roleId, roleDto);
         return ResponseEntity.status(HttpStatus.OK).body(updateRole);
@@ -147,6 +148,7 @@ public class RoleController {
      * @return
      */
     @DeleteMapping("/{roleId}")
+    @PreAuthorize("hasRole('MASTER')")
     public ResponseEntity<Void> deleteRole(@PathVariable UUID roleId) {
         roleService.deleteRole(roleId);
         return ResponseEntity.ok().build();

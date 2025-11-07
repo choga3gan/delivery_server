@@ -2,6 +2,7 @@ package com.choga3gan.delivery.user.service;
 
 import com.choga3gan.delivery.global.jwt.TokenDto;
 import com.choga3gan.delivery.global.jwt.TokenService;
+import com.choga3gan.delivery.global.utils.service.SecurityUtilService;
 import com.choga3gan.delivery.user.domain.Role;
 import com.choga3gan.delivery.user.domain.User;
 import com.choga3gan.delivery.user.dto.*;
@@ -28,6 +29,7 @@ public class UserService {
     private final PasswordEncoder encoder;
     private final TokenService tokenService;
     private final RoleRepository roleRepository;
+    private final SecurityUtilService securityUtil;
 
     /**
      * 회원가입
@@ -176,7 +178,7 @@ public class UserService {
      */
     @Transactional
     public UserResponse getUsersDetail(UUID userId){
-      User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+      User user = userRepository.findById_Id(userId).orElseThrow(UserNotFoundException::new);
 
       return UserResponse.from(user);
     }
@@ -239,7 +241,7 @@ public class UserService {
     @Transactional
     public UserResponse updateUser(UUID userId, UserUpdateRequest req){
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findById_Id(userId).orElseThrow(UserNotFoundException::new);
 
         String enPassword = null;
 
@@ -257,4 +259,8 @@ public class UserService {
      * @param
      * @return
      */
+    public void userDelete(UUID userId){
+        User user = userRepository.findById_Id(userId).orElseThrow(UserNotFoundException::new);
+        user.softDelete(securityUtil.getCurrentUsername());
+    }
 }

@@ -17,6 +17,7 @@
 
 package com.choga3gan.delivery.user.controller;
 
+import com.choga3gan.delivery.global.security.UserDetailsImpl;
 import com.choga3gan.delivery.user.dto.*;
 import com.choga3gan.delivery.user.repository.UserRepository;
 import com.choga3gan.delivery.user.service.UserService;
@@ -29,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -165,12 +168,25 @@ public class UserController {
      * @param
      * @return
      */
+    @DeleteMapping("/{userId}")
+    @Transactional
+    @PreAuthorize("hasRole('MASTER')")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
+        userService.userDelete(userId);
+        return ResponseEntity.ok().build();
+    }
 
     /**
      * 로그인한 사용자 프로필 조회
      * @param  
      * @return 
      */
+    @GetMapping("/profile")
+    public ResponseEntity<UserResponse> getUserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserResponse res = userService.getUsersDetail(userDetails.getUser().getId().getId());
+
+        return ResponseEntity.ok(res);
+    }
     //테스트용
 //    @GetMapping("profile")
 //    public void profile(@AuthenticationPrincipal UserDetailsImpl userDetails) {

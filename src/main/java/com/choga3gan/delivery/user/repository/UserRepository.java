@@ -18,6 +18,7 @@ public interface UserRepository extends JpaRepository<User, UserId> {
      */
     @EntityGraph(attributePaths = "role")
     Optional<User> findByUsername(String username);
-    Optional<User> findById(UUID id);
+    Optional<User> findById(UUID id); // 해당 부분 얘기하기
+    Optional<User> findById_Id(UUID id); // 이걸로 바꿔야할듯?
     Optional<User> findByEmail(String email);
 }
