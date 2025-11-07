@@ -116,7 +116,7 @@ public class UserController {
                 사용자 목록을 조회합니다.
                 """
     )
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     @GetMapping
     public ResponseEntity<List<UserResponse>> findAllUser() {
         List<UserResponse> users = userService.getAllUsers();
@@ -130,7 +130,7 @@ public class UserController {
                 """
     )
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     public ResponseEntity<UserResponse> getUserDetails(UUID userId) {
         UserResponse res = userService.getUsersDetail(userId);
 
@@ -143,7 +143,7 @@ public class UserController {
                 """
     )
     @PostMapping
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     public ResponseEntity<Void> createUser(@RequestBody UserCreateRequest req){
         userService.createUser(req);
         return ResponseEntity.ok().build();
@@ -155,7 +155,7 @@ public class UserController {
      * @return
      */
     @PatchMapping("{userId}")
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     public ResponseEntity<UserResponse> patchUser(@PathVariable UUID userId,
             @RequestBody UserUpdateRequest req){
         userService.updateUser(userId, req);
@@ -170,7 +170,7 @@ public class UserController {
      */
     @DeleteMapping("/{userId}")
     @Transactional
-    @PreAuthorize("hasRole('MASTER')")
+    @PreAuthorize("hasRole('ROLE_MASTER')")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID userId) {
         userService.userDelete(userId);
         return ResponseEntity.ok().build();

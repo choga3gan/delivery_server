@@ -69,7 +69,7 @@ public class OrderController {
      * @return
      */
     @GetMapping
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public List<OrderDto> orderList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return detailsService.findAll(getUserId(userDetails));
