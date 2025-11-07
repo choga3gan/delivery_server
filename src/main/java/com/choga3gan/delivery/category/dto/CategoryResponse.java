@@ -21,10 +21,14 @@ import com.choga3gan.delivery.category.domain.Category;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
+@Setter
+@NoArgsConstructor
 @Schema(description = "카테고리 값 반환 DTO")
 public class CategoryResponse {
     @Schema(description = "카테고리 id", example = "550e8400-e29b-41d4-a716-446655440000")

@@ -177,8 +177,14 @@ public class Store extends Auditable {
      * @param  rating
      */
     public void deleteReviews(double rating) {
+        if (this.reviewCount <= 1) {
+            this.ratingAvg = 0.0;
+            this.reviewCount = 0;
+            return;
+        }
+
+        this.ratingAvg = (ratingAvg * reviewCount - rating) / (reviewCount - 1);
         this.reviewCount -= 1;
-        this.ratingAvg = (ratingAvg * reviewCount - rating) / (reviewCount);
     }
 
     /**
