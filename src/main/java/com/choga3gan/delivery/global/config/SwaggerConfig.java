@@ -40,8 +40,8 @@ public class SwaggerConfig {
                         .contact(new Contact().email(""))
                 )
                 .addSecurityItem(securityRequirement)
-                .schemaRequirement("BearerAuth", securityScheme);
-                //.addServersItem(server);
+                .schemaRequirement("BearerAuth", securityScheme)
+                .addServersItem(server);
     }
 
     @Bean
