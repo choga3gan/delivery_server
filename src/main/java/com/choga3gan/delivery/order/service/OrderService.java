@@ -91,6 +91,13 @@ public class OrderService {
         else order.cancel(); // 취소
     }
 
+    @Transactional
+    public void completeOrder(UUID orderId) {
+        roleCheck.check(orderId);
+        Order order = getOrder(orderId);
+        order.complete();
+    }
+
 
 
     private List<OrderItem> toOrderItems(List<OrderItemRequest> items) {

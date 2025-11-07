@@ -122,7 +122,6 @@ public class Order extends Auditable {
 
             //결제 취소 요청
             Events.trigger(new OrderRefundEvent(orderId));
-            Events.trigger(new PaymentCancelEvent(orderId));
         }
     }
 

@@ -41,6 +41,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .totalPrice(order.getTotalPrice())
                 .quantity(quantity)
                 .build();
+        order.delivery();
         return paymentRepository.save(payment);
     }
 

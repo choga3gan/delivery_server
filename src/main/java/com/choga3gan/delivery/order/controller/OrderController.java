@@ -1,6 +1,7 @@
 package com.choga3gan.delivery.order.controller;
 
 import com.choga3gan.delivery.global.security.UserDetailsImpl;
+import com.choga3gan.delivery.order.domain.Order;
 import com.choga3gan.delivery.order.dto.OrderDto;
 import com.choga3gan.delivery.order.dto.OrderRequest;
 import com.choga3gan.delivery.order.dto.OrderResponse;
@@ -9,6 +10,7 @@ import com.choga3gan.delivery.order.service.OrderDetailsService;
 import com.choga3gan.delivery.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.Repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -63,6 +65,11 @@ public class OrderController {
         orderService.acceptOrder(orderId, accept);
     }
 
+    @PatchMapping("/{orderId}/complete")
+    public void orderComplete(@PathVariable("orderId") UUID orderId) {
+        orderService.completeOrder(orderId);
+    }
+
 
     /**
      * 매장의 주문 목록
@@ -91,4 +98,8 @@ public class OrderController {
     private UUID getUserId(UserDetailsImpl userDetails) {
         return userDetails.getUser().getId().getId();
     }
+}
+
+interface OrderRepository extends Repository<Order, UUID> {
+
 }
