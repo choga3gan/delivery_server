@@ -68,6 +68,8 @@ public class StoreResponse {
                 .storeName(store.getStoreName())
                 .address(store.getAddress())
                 .telNum(store.getTelNum())
+                .ratingAvg(store.getRatingAvg())
+                .reviewCount(store.getReviewCount())
                 .openTime(store.getServiceTime().getStartTime())
                 .closeTime(store.getServiceTime().getEndTime())
                 .categories(store.getCategories() != null ?
