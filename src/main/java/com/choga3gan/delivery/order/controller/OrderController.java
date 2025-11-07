@@ -120,7 +120,3 @@ public class OrderController {
         return userDetails.getUser().getId().getId();
     }
 }
-
-interface OrderRepository extends Repository<Order, UUID> {
-
-}
