@@ -39,7 +39,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -167,6 +166,7 @@ public class ReviewServiceImpl implements ReviewService {
      * 관리자 권한으로 리뷰 삭제
      *
      * @param  reviewId
+     * ROLE_ROLE_MANAGER
      */
     @Override
     @PreAuthorize("hasAnyRole('MANAGER', 'MASTER')")

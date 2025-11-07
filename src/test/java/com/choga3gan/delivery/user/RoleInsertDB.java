@@ -22,7 +22,7 @@ public class RoleInsertDB {
         List<Role> roles = new ArrayList<>();
 
         roles.add(Role.builder()
-                .roleName("ROLE_MASTER")
+                .roleName("MASTER")
                 .roleDescription("관리자")
                 .build());
 

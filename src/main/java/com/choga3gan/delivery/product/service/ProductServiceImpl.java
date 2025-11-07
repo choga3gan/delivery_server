@@ -33,7 +33,6 @@ import com.choga3gan.delivery.store.repository.StoreRepository;
 import com.choga3gan.delivery.store.service.CheckStoreAccess;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,6 @@
 package com.choga3gan.delivery.order.controller;
 
 import com.choga3gan.delivery.global.security.UserDetailsImpl;
-import com.choga3gan.delivery.order.domain.Order;
 import com.choga3gan.delivery.order.dto.OrderDto;
 import com.choga3gan.delivery.order.dto.OrderRequest;
 import com.choga3gan.delivery.order.dto.OrderResponse;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.Repository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -97,7 +95,7 @@ public class OrderController {
             """
     )
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_OWNER')")
+    @PreAuthorize("hasRole('OWNER')")
     public List<OrderDto> orderList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return detailsService.findAll(getUserId(userDetails));
