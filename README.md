@@ -27,5 +27,5 @@
 <img width="1312" height="709" alt="Delivery Server - flow chart" src="https://github.com/user-attachments/assets/b72ffde8-6f51-4710-8367-1a52220d7313" />
 
 ## Appendix
-- [발표자료]()
+- [발표자료](https://drive.google.com/file/d/1fujLfHWyDy3zV9RWa3k0pHcGDKPLbFwG/view?usp=drive_link)
 - [시연영상](https://drive.google.com/file/d/16kL8qPKTTiDaU3FGUGlsTBpFCqPkTzu5/view?usp=drive_link)
