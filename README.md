@@ -7,6 +7,7 @@
 | 이학준 | 이한빈 | 허진경 |
 |:---:|:---:|:---:|
 |[<img src="https://github.com/user-attachments/assets/2a2629f7-3ecf-4e5b-8004-ec49cf7c958f" width=130>](https://github.com/banchum)|[<img src="https://github.com/user-attachments/assets/6c2ed7db-a149-4c82-87f5-d723b6fb24a6" width=130>](https://github.com/hanbeen03)|[<img src="https://github.com/user-attachments/assets/7bc127d2-4f33-4f5f-bcb1-460a47f71682" width=130>](https://github.com/jinnk0)|
+|사용자, JWT, 결제|주문, 결제|매장, 상품, 리뷰, 결제|
 
 ## 테스트 계정 및 서버 주소
 | 사용자 | 계정 |
