@@ -17,11 +17,13 @@
 package com.choga3gan.delivery.user.domain;
 
 import com.choga3gan.delivery.global.domain.Auditable;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -48,9 +50,9 @@ public class Role extends Auditable {
         this.roleDescription = roleDescription;
     }
 
-    @ToString.Exclude // 순환참조 문제 해결
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
-    private List<User> users;
+    //@ToString.Exclude // 순환참조 문제 해결
+    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
+    //private List<User> users;
 
     public void changeRoleName(String roleName) {
         this.roleName = roleName;
